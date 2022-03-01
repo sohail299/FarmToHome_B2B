@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+
+        <variable
+            name="loginRequestModel"
+            type="com.switchsolutions.farmtohome.b2b.presentation.login.data.requestmodel.LoginRequestModel" />
+    </data>
+
+<androidx.core.widget.NestedScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F8FB"
+    android:fillViewport="true"
+    tools:context=".presentation.login.ui.login.LoginActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
+            app:layout_constraintStart_toStartOf="@+id/guideline2">
+
+
+            <TextView
+                android:id="@+id/login_signup_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/montserrat"
+                android:text="Sign in"
+                android:textColor="#383838"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <View
+                android:id="@+id/view"
+                android:layout_width="100dp"
+                android:layout_height="2dp"
+                android:layout_marginTop="8dp"
+                android:background="#8BDC5B"
+                app:layout_constraintStart_toStartOf="@+id/login_signup_tv"
+                app:layout_constraintTop_toBottomOf="@+id/login_signup_tv" />
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="8dp"
+                android:src="@drawable/icon_launcher"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintGuide_end="294dp"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/login_phone_number_et"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/rounded_edittext_bg"
+                android:drawableStart="@drawable/smartphone_icon"
+                android:drawableLeft="@drawable/smartphone_icon"
+                android:drawablePadding="12dp"
+                android:ems="11"
+                android:fontFamily="@font/montserrat"
+                android:hint="Mobile Number (03xx xxxxxxx)"
+                android:inputType="number"
+                android:maxLength="11"
+                android:paddingStart="16dp"
+                android:paddingLeft="16dp"
+                android:text="@={loginRequestModel.msisdn}"
+                android:textColor="#000000"
+                android:textColorHint="@color/light_grey"
+                android:textSize="13sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/view"
+                app:layout_constraintTop_toBottomOf="@+id/textView100" />
+
+            <EditText
+                android:id="@+id/login_password_et"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/rounded_edittext_bg"
+                android:drawableStart="@drawable/ic_password_icon"
+                android:drawableLeft="@drawable/ic_password_icon"
+                android:drawablePadding="12dp"
+                android:ems="10"
+                android:fontFamily="@font/montserrat"
+                android:hint="Password"
+                android:inputType="textPassword"
+                android:paddingStart="16dp"
+                android:paddingLeft="16dp"
+                android:text="@={loginRequestModel.password}"
+                android:textColor="#000000"
+                android:textColorHint="@color/light_grey"
+                android:textSize="13sp"
+                app:layout_constraintEnd_toEndOf="@+id/login_phone_number_et"
+                app:layout_constraintStart_toStartOf="@+id/login_phone_number_et"
+                app:layout_constraintTop_toBottomOf="@+id/textView101"
+                app:passwordToggleEnabled="true" />
+
+            <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
+                android:id="@+id/login_login_btn"
+                android:layout_width="120dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/rounded_edittext_bg"
+                android:fontFamily="@font/montserrat"
+                android:text="Sign In"
+                android:textAllCaps="false"
+                android:textColor="@color/colorAccent"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="10dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/login_password_et"
+                app:layout_constraintTop_toBottomOf="@+id/error_message_textview"
+                app:spinning_bar_color="@color/colorAccent"
+                app:spinning_bar_padding="6dp"
+                app:spinning_bar_width="4dp" />
+
+
+            <TextView
+                android:id="@+id/login_forgot_password_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:fontFamily="@font/montserrat"
+                android:text="Forgot password?"
+                android:textColor="@color/black"
+                app:layout_constraintBottom_toBottomOf="@+id/login_login_btn"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/login_login_btn" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.5" />
+
+
+            <TextView
+                android:id="@+id/textView100"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:fontFamily="@font/montserrat"
+                android:text="Enter Mobile Number"
+                android:textColor="@color/grey"
+                android:textSize="13sp"
+                app:layout_constraintStart_toStartOf="@+id/login_phone_number_et"
+                app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+            <ImageButton
+                android:id="@+id/show_hide_password_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/password_hide_icon"
+                app:layout_constraintBottom_toBottomOf="@+id/login_password_et"
+                app:layout_constraintEnd_toEndOf="@+id/login_password_et"
+                app:layout_constraintTop_toTopOf="@+id/login_password_et" />
+
+            <TextView
+                android:id="@+id/textView101"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/montserrat"
+                android:text="Enter Password"
+                android:textColor="@color/grey"
+                android:textSize="13sp"
+                app:layout_constraintStart_toStartOf="@+id/login_phone_number_et"
+                app:layout_constraintTop_toBottomOf="@+id/login_phone_number_et" />
+
+
+            <TextView
+                android:id="@+id/error_message_textview"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/montserrat"
+                android:text="Error Message"
+                android:textColor="@color/red_new"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@+id/login_password_et"
+                app:layout_constraintStart_toStartOf="@+id/login_password_et"
+                app:layout_constraintTop_toBottomOf="@+id/login_password_et" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_forgot_password"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#F5F8FB"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/forgot_password_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/montserrat"
+            android:text="Forgot Password"
+            android:textColor="#383838"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/back_button_forgot_password"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/forgot_password_phone_number_et"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/rounded_edittext_bg"
+            android:drawableStart="@drawable/smartphone_icon"
+            android:drawableLeft="@drawable/smartphone_icon"
+            android:drawablePadding="12dp"
+            android:ems="11"
+            android:fontFamily="@font/montserrat"
+            android:hint="Phone Number (03xx xxxxxxx)"
+            android:textColorHint="@color/light_grey"
+            android:inputType="number"
+            android:maxLength="11"
+            android:paddingStart="16dp"
+            android:paddingLeft="16dp"
+            android:paddingEnd="16dp"
+            android:textColor="#000000"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toEndOf="@+id/textView5"
+            app:layout_constraintStart_toStartOf="@+id/textView5"
+            app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:textColor="@color/grey"
+            android:text="Please enter your registered phone number to reset your password"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/back_button_forgot_password"
+            app:layout_constraintTop_toBottomOf="@+id/forgot_password_tv" />
+
+        <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
+            android:id="@+id/forgot_password_reset_btn"
+            android:layout_width="120dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/rounded_edittext_bg"
+            android:text="Send OTP"
+            android:textAllCaps="false"
+            android:textColor="@color/colorAccent"
+            app:layout_constraintEnd_toEndOf="@+id/forgot_password_phone_number_et"
+            app:layout_constraintTop_toBottomOf="@+id/forgot_password_phone_number_et"
+            app:spinning_bar_color="@color/colorAccent"
+            app:spinning_bar_padding="6dp"
+            app:spinning_bar_width="4dp" />
+
+        <ImageView
+            android:id="@+id/back_button_forgot_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:background="@drawable/back_arrow_black_icon"
+            app:layout_constraintBottom_toBottomOf="@+id/forgot_password_tv"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/forgot_password_tv" />
+
+        <ImageView
+            android:id="@+id/imageView26"
+            android:layout_width="320dp"
+            android:layout_height="250dp"
+            android:layout_marginBottom="32dp"
+            android:background="@drawable/forgot_password"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>
+
+
+</layout>

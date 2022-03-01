@@ -1,4 +1,4 @@
-package com.switchsolutions.farmtohome.farmtohome_b2b
+package com.switchsolutions.farmtohome.b2b
 
 import org.junit.Test
 
