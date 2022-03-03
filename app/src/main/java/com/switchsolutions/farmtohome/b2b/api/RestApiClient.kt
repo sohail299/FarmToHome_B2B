@@ -11,7 +11,6 @@ import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 class RestApiClient {
-
     companion object {
 
         private val retrofitWithHeaders : Retrofit by lazy {
@@ -44,9 +43,40 @@ class RestApiClient {
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
         }
+
+        private val retrofitWithHeaders2 : Retrofit by lazy {
+            val okHttpClientBuild = OkHttpClient().newBuilder()
+            okHttpClientBuild.connectTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
+                .addInterceptor(httpLoggingInterceptor())
+            okHttpClientBuild.addInterceptor(getHeaderInterceptor())
+            val okHttpClient = okHttpClientBuild.build()
+
+            Retrofit.Builder()
+                .baseUrl("http://admintest.farmtohome.com.pk/api/")
+                .client(okHttpClient)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+        }
+
+        private val retrofitWithOutHeaders2 : Retrofit by lazy {
+            val okHttpClientBuild = OkHttpClient().newBuilder()
+            okHttpClientBuild.connectTimeout(60, TimeUnit.SECONDS)
+                    .readTimeout(60, TimeUnit.SECONDS)
+                    .writeTimeout(60, TimeUnit.SECONDS)
+                    .addInterceptor(httpLoggingInterceptor())
+            val okHttpClient = okHttpClientBuild.build()
+
+            Retrofit.Builder()
+                    .baseUrl("http://admintest.farmtohome.com.pk/api/")
+                    .client(okHttpClient)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build()
+        }
         private fun getHeaderInterceptor(): Interceptor {
             return Interceptor { chain ->
-                val token = MainActivity.userToken
+                val token = "123"
                 Timber.tag("Token").d(token)
                 if (token != null) {
                     val request = chain.request().newBuilder().addHeader("Authorization", "Bearer $token").build()
@@ -71,7 +101,14 @@ class RestApiClient {
             } else{
                 retrofitWithOutHeaders.create(ApiCommService::class.java)
             }
+        }
 
+        fun getClient2(addHeaders : Boolean) : ApiCommService {
+            return if(addHeaders){
+                retrofitWithHeaders2.create(ApiCommService::class.java)
+            } else{
+                retrofitWithOutHeaders2.create(ApiCommService::class.java)
+            }
         }
     }
 }

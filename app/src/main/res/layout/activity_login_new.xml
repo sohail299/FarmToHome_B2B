@@ -4,10 +4,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <data>
-
         <variable
             name="loginRequestModel"
-            type="com.switchsolutions.farmtohome.b2b.presentation.login.data.requestmodel.LoginRequestModel" />
+            type="com.switchsolutions.farmtohome.b2b.presentation.login.data.request.LoginRequestModel" />
+
+        <variable
+            name="passwordResetRequestModel"
+            type="com.switchsolutions.farmtohome.b2b.presentation.login.data.request.PasswordResetRequestModel" />
+
+        <variable
+            name="otpRequestModel"
+            type="com.switchsolutions.farmtohome.b2b.presentation.login.data.request.OTPVerificationRequestModel" />
     </data>
 
 <androidx.core.widget.NestedScrollView
@@ -15,7 +22,7 @@
     android:layout_height="match_parent"
     android:background="#F5F8FB"
     android:fillViewport="true"
-    tools:context=".presentation.login.ui.login.LoginActivity">
+    tools:context=".presentation.login.ui.LoginActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -261,6 +268,7 @@
             android:paddingLeft="16dp"
             android:paddingEnd="16dp"
             android:textColor="#000000"
+            android:text="@={passwordResetRequestModel.msisdn}"
             android:textSize="13sp"
             app:layout_constraintEnd_toEndOf="@+id/textView5"
             app:layout_constraintStart_toStartOf="@+id/textView5"
@@ -274,7 +282,7 @@
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
             android:textColor="@color/grey"
-            android:text="Please enter your registered phone number to reset your password"
+            android:text="@string/enter_phone_to_reset"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/back_button_forgot_password"
             app:layout_constraintTop_toBottomOf="@+id/forgot_password_tv" />
@@ -316,6 +324,389 @@
             app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_otp_verification"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#F5F8FB"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:layout_marginTop="24dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/opt_image" />
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:gravity="center"
+                android:text="A verification code has been sent to"
+                android:textColor="#000"
+                android:textSize="13sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView103" />
+
+            <EditText
+                android:id="@+id/otp_1"
+                android:layout_width="50dp"
+                android:layout_height="45dp"
+                android:background="@drawable/rounded_edittext_bg"
+                android:ems="10"
+                android:gravity="center"
+                android:textColor="@color/grey"
+                android:inputType="number"
+                android:maxLength="1"
+                android:textSize="20sp"
+                android:text="@={otpRequestModel.otp1}"
+                app:layout_constraintEnd_toStartOf="@+id/otp_2"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/otp_3" />
+
+            <EditText
+                android:id="@+id/otp_2"
+                android:layout_width="50dp"
+                android:layout_height="45dp"
+                android:background="@drawable/rounded_edittext_bg"
+                android:ems="10"
+                android:gravity="center"
+                android:textColor="@color/grey"
+                android:inputType="number"
+                android:maxLength="1"
+                android:textSize="20sp"
+                android:text="@={otpRequestModel.otp2}"
+                app:layout_constraintEnd_toStartOf="@+id/otp_3"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/otp_1"
+                app:layout_constraintTop_toTopOf="@+id/otp_3" />
+
+            <EditText
+                android:id="@+id/otp_3"
+                android:layout_width="50dp"
+                android:layout_height="45dp"
+                android:background="@drawable/rounded_edittext_bg"
+                android:layout_marginTop="64dp"
+                android:ems="10"
+                android:textColor="@color/grey"
+                android:gravity="center"
+                android:inputType="number"
+                android:maxLength="1"
+                android:textSize="20sp"
+                android:text="@={otpRequestModel.otp3}"
+                app:layout_constraintEnd_toStartOf="@+id/otp_4"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/otp_2"
+                app:layout_constraintTop_toBottomOf="@+id/textView6" />
+
+            <EditText
+                android:id="@+id/otp_4"
+                android:layout_width="50dp"
+                android:layout_height="45dp"
+                android:background="@drawable/rounded_edittext_bg"
+                android:ems="10"
+                android:textColor="@color/grey"
+                android:gravity="center"
+                android:inputType="number"
+                android:maxLength="1"
+                android:textSize="20sp"
+                android:text="@={otpRequestModel.otp4}"
+                app:layout_constraintEnd_toStartOf="@+id/otp_5"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/otp_3"
+                app:layout_constraintTop_toTopOf="@+id/otp_3" />
+
+            <EditText
+                android:id="@+id/otp_5"
+                android:layout_width="50dp"
+                android:layout_height="45dp"
+                android:background="@drawable/rounded_edittext_bg"
+                android:ems="10"
+                android:textColor="@color/grey"
+                android:gravity="center"
+                android:inputType="number"
+                android:maxLength="1"
+                android:textSize="20sp"
+                android:text="@={otpRequestModel.otp5}"
+                app:layout_constraintEnd_toStartOf="@+id/otp_6"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/otp_4"
+                app:layout_constraintTop_toTopOf="@+id/otp_4" />
+
+            <EditText
+                android:id="@+id/otp_6"
+                android:layout_width="50dp"
+                android:layout_height="45dp"
+                android:background="@drawable/rounded_edittext_bg"
+                android:ems="10"
+                android:textColor="@color/grey"
+                android:gravity="center"
+                android:inputType="number"
+                android:maxLength="1"
+                android:textSize="20sp"
+                android:text="@={otpRequestModel.otp6}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/otp_5"
+                app:layout_constraintTop_toTopOf="@+id/otp_5" />
+
+            <TextView
+                android:id="@+id/otp_count_down_timer_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Timer"
+                android:textColor="#000"
+                android:fontFamily="@font/montserrat"
+                app:layout_constraintEnd_toEndOf="@+id/otp_verification_button"
+                app:layout_constraintHorizontal_bias="0.7"
+                app:layout_constraintStart_toStartOf="@+id/otp_verification_button"
+                app:layout_constraintTop_toBottomOf="@+id/otp_verification_button" />
+
+            <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
+                android:id="@+id/otp_verification_button"
+                android:layout_width="180dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/rounded_edittext_bg"
+                android:fontFamily="@font/montserrat"
+                android:text="VERIFY Code"
+                android:textColor="@color/red_new"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/otp_4"
+                app:spinning_bar_color="@color/red_new"
+                app:spinning_bar_padding="6dp"
+                app:spinning_bar_width="4dp" />
+
+            <ImageView
+                android:id="@+id/send_refresh_sms_call"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginRight="24dp"
+                app:layout_constraintBottom_toBottomOf="@+id/otp_count_down_timer_label"
+                app:layout_constraintEnd_toStartOf="@+id/otp_count_down_timer_label"
+                app:layout_constraintTop_toTopOf="@+id/otp_count_down_timer_label"
+                app:srcCompat="@drawable/confirmpasswordicon" />
+
+            <TextView
+                android:id="@+id/textView103"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Verify Mobile Number"
+                android:textColor="#000"
+                android:fontFamily="@font/montserrat"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/imageView3"
+                app:layout_constraintStart_toStartOf="@+id/imageView3"
+                app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_password_reset"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#F5F8FB"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/forgot_password_toolbar_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/montserrat"
+                android:text="Forgot Password"
+                android:textColor="#383838"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@+id/imageView23"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <EditText
+                android:id="@+id/reset_password_change_password_et"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/rounded_edittext_bg"
+                android:drawableStart="@drawable/ic_password_icon"
+                android:drawableLeft="@drawable/ic_password_icon"
+                android:drawablePadding="12sp"
+                android:ems="10"
+                android:hint="New Password"
+                android:inputType="textPassword"
+                android:paddingStart="16dp"
+                android:paddingLeft="16dp"
+                android:paddingEnd="16dp"
+                android:paddingRight="16dp"
+                android:textColor="#000000"
+                android:textSize="13sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView4"
+                app:passwordToggleEnabled="true" />
+
+            <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
+                android:id="@+id/reset_password_change_password_btn"
+                android:layout_width="120dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/rounded_edittext_bg"
+                android:elevation="4dp"
+                android:onClick="ChangePassword"
+                android:text="Confirm"
+                android:textAllCaps="false"
+                android:textColor="@color/red_new"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/reset_password_change_password_et"
+                app:layout_constraintTop_toBottomOf="@+id/reset_password_confirm_change_password_error_et"
+                app:spinning_bar_color="@color/red_new"
+                app:spinning_bar_padding="6dp"
+                app:spinning_bar_width="4dp" />
+
+            <ImageView
+                android:id="@+id/imageView23"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:background="@drawable/back_arrow_black_icon"
+                app:layout_constraintBottom_toBottomOf="@+id/forgot_password_toolbar_tv"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/forgot_password_toolbar_tv" />
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:fontFamily="@font/montserrat"
+                android:text="New password"
+                android:textColor="#000"
+                android:textSize="13sp"
+                app:layout_constraintStart_toStartOf="@+id/imageView23"
+                app:layout_constraintTop_toBottomOf="@+id/forgot_password_toolbar_tv" />
+
+            <TextView
+                android:id="@+id/textView7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/montserrat"
+                android:text="Confirm new password"
+                android:textColor="#000"
+                android:textSize="13sp"
+                app:layout_constraintStart_toStartOf="@+id/reset_password_change_password_et"
+                app:layout_constraintTop_toBottomOf="@+id/reset_password_change_password_error_et" />
+
+            <EditText
+                android:id="@+id/reset_password_confirm_change_password_et"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/rounded_edittext_bg"
+                android:drawableStart="@drawable/ic_password_icon"
+                android:drawableLeft="@drawable/ic_password_icon"
+                android:drawablePadding="12sp"
+                android:ems="10"
+                android:fontFamily="@font/montserrat"
+                android:hint="Confirm password"
+                android:inputType="textPassword"
+                android:paddingStart="16dp"
+                android:paddingLeft="16dp"
+                android:paddingEnd="16dp"
+                android:paddingRight="16dp"
+                android:textColor="#000"
+                android:textSize="13sp"
+                app:layout_constraintEnd_toEndOf="@+id/reset_password_change_password_et"
+                app:layout_constraintStart_toStartOf="@+id/reset_password_change_password_et"
+                app:layout_constraintTop_toBottomOf="@+id/textView7" />
+
+            <TextView
+                android:id="@+id/textView102"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:fontFamily="@font/montserrat"
+                android:text="Password must have minimum of 8 letters/numbers"
+                android:textColor="#BE000000"
+                android:textSize="13sp"
+                app:layout_constraintEnd_toStartOf="@+id/reset_password_change_password_btn"
+                app:layout_constraintStart_toStartOf="@+id/reset_password_confirm_change_password_et"
+                app:layout_constraintTop_toTopOf="@+id/reset_password_change_password_btn" />
+
+            <ImageView
+                android:id="@+id/reset_password_show_hide_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/password_hide_icon"
+                app:layout_constraintBottom_toBottomOf="@+id/reset_password_change_password_et"
+                app:layout_constraintEnd_toEndOf="@+id/reset_password_change_password_et"
+                app:layout_constraintTop_toTopOf="@+id/reset_password_change_password_et" />
+
+            <ImageView
+                android:id="@+id/reset_password_confirm_show_hide_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/password_hide_icon"
+                app:layout_constraintBottom_toBottomOf="@+id/reset_password_confirm_change_password_et"
+                app:layout_constraintEnd_toEndOf="@+id/reset_password_confirm_change_password_et"
+                app:layout_constraintTop_toTopOf="@+id/reset_password_confirm_change_password_et" />
+
+            <TextView
+                android:id="@+id/reset_password_change_password_error_et"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/montserrat"
+                android:text="TextView"
+                android:visibility="gone"
+                android:textColor="@color/red_new"
+                android:textSize="13sp"
+                app:layout_constraintStart_toStartOf="@+id/reset_password_change_password_et"
+                app:layout_constraintTop_toBottomOf="@+id/reset_password_change_password_et" />
+
+            <TextView
+                android:id="@+id/reset_password_confirm_change_password_error_et"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/montserrat"
+                android:text="TextView"
+                android:textColor="@color/red_new"
+                android:textSize="13sp"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="@+id/reset_password_confirm_change_password_et"
+                app:layout_constraintTop_toBottomOf="@+id/reset_password_confirm_change_password_et" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
 

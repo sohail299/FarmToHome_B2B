@@ -7,12 +7,20 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:8660733520:android:57f9ac2201de251769cb55",
+        "mobilesdk_app_id": "1:8660733520:android:c4c6c90b5a45f11769cb55",
         "android_client_info": {
           "package_name": "com.switchsolutions.farmtohome.b2b"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "8660733520-h5o6cl7ulb8albnircrteqrppsdl775f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.switchsolutions.farmtohome.b2b",
+            "certificate_hash": "8fb191c2acb8c5e46240278640280df018a63075"
+          }
+        },
         {
           "client_id": "8660733520-5f22cdgtaq3blnh8jlkae2jet2sc8ecg.apps.googleusercontent.com",
           "client_type": 3

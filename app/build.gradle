@@ -1,22 +1,16 @@
-buildscript {
-    dependencies {
-        // Add our classpath
-        classpath 'com.google.gms:google-services:4.3.10'
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.8.1'
-    }
-}
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
+    id 'com.google.gms.google-services'
 }
-
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdk 32
 
     defaultConfig {
-        applicationId "com.switchsolutions.farmtohome.farmtohome_b2b"
+        applicationId "com.switchsolutions.farmtohome.b2b"
         minSdk 21
         targetSdk 32
         versionCode 1
@@ -101,5 +95,12 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:29.1.0')
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation "com.google.firebase:firebase-messaging:23.0.0"
+    implementation 'com.google.firebase:firebase-auth-ktx'
+
+    //splash screen api
+    implementation 'androidx.core:core-splashscreen:1.0.0-beta01'
+    implementation 'com.github.bumptech.glide:glide:4.12.0'
+    // Glide v4 uses this new annotation processor -- see https://bumptech.github.io/glide/doc/generatedapi.html
+    kapt 'com.github.bumptech.glide:compiler:4.12.0'
 
 }

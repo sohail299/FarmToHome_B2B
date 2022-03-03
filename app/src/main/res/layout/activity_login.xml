@@ -7,7 +7,7 @@
 
         <variable
             name="loginRequestModel"
-            type="com.switchsolutions.farmtohome.b2b.presentation.login.data.requestmodel.LoginRequestModel" />
+            type="com.switchsolutions.farmtohome.b2b.presentation.login.data.request.LoginRequestModel" />
     </data>
 
     <!--<ScrollView-->

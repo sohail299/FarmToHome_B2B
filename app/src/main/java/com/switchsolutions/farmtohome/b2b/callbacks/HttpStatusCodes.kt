@@ -1,8 +1,5 @@
 package com.switchsolutions.farmtohome.b2b.callbacks
 
-/**
- * Created by Wajid.Ali on 23-Jan-18.
- */
 interface HttpStatusCodes {
     companion object {
         // --- 1xx Informational ---

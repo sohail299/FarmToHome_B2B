@@ -3,11 +3,8 @@ package com.switchsolutions.farmtohome.b2b
 import android.content.Intent
 import android.os.Bundle
 import android.os.PersistableBundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.messaging.FirebaseMessaging
-import com.switchsolutions.farmtohome.b2b.presentation.login.ui.login.LoginActivity
-import timber.log.Timber
+import com.switchsolutions.farmtohome.b2b.presentation.login.ui.LoginActivity
 
 class BaseActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
