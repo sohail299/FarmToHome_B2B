@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable
+            name="loginResponseModel"
+            type="com.switchsolutions.farmtohome.b2b.presentation.login.data.response.LoginResponse" />
+    </data>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/background_grey"
+    android:layout_marginTop="10dp"
+    android:paddingStart="10dp"
+    android:paddingEnd="10dp">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/grey"
+        android:text="Name"/>
+    <TextView
+        android:id="@+id/tv_customer_name_profile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:padding="5dp"
+        android:textColor="@color/light_grey"
+        android:text="@{loginResponseModel.data.name}"
+        android:background="@drawable/rounded_edittext_bg"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/grey"
+        android:layout_marginTop="20dp"
+        android:text="Email"/>
+    <TextView
+        android:id="@+id/tv_customer_email_profile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/light_grey"
+        android:layout_marginTop="10dp"
+        android:padding="5dp"
+        android:text="@{loginResponseModel.data.email}"
+        android:background="@drawable/rounded_edittext_bg"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/grey"
+        android:layout_marginTop="20dp"
+        android:text="Phone"/>
+    <TextView
+        android:id="@+id/tv_customer_phone_profile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/light_grey"
+        android:layout_marginTop="10dp"
+        android:padding="5dp"
+        android:text="@{loginResponseModel.data.msisdn}"
+        android:background="@drawable/rounded_edittext_bg"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/grey"
+        android:layout_marginTop="20dp"
+        android:text="Address"/>
+    <TextView
+        android:id="@+id/tv_customer_address_profile"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/light_grey"
+        android:padding="5dp"
+        android:text="@{loginResponseModel.data.address}"
+        android:background="@drawable/remarks_background_edit_text"/>
+    <Button
+        android:id="@+id/btn_logout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/logout_button_background"
+        android:textColor="@color/white"
+        android:text="Logout"/>
+
+
+</LinearLayout>
+</layout>

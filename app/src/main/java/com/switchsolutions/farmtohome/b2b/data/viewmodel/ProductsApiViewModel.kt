@@ -31,13 +31,13 @@ class ProductsApiViewModel : ViewModel() {
     init {
         callProductsInApi.value = false
     }
-    fun startObserver(cityId: Int) {
+    fun startObserver(cityId: Int, customerId: Int) {
         callProductsInApi.value = true
 
         //call api here
         object : RetrofitApiManager<ProductResponseModel>(AppLauncher.ApplicationContext) {
             init {
-                callServer(RestApiClient.getClient2(addHeaders = true).getProducts(cityId = cityId, customer_id = 9500))
+                callServer(RestApiClient.getClient2(addHeaders = true).getProducts(cityId = cityId, customer_id = customerId))
             }
             override fun onSuccess(t: ProductResponseModel?) {
                 callProductsInApi.value = false

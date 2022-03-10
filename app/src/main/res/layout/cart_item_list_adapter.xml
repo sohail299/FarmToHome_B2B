@@ -7,7 +7,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-        android:elevation="5dp"
+        android:elevation="25dp"
+        app:cardCornerRadius="20dp"
         android:background="@color/white">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -16,12 +17,22 @@
             android:layout_height="wrap_content"
             android:background="@color/white">
 
+            <ImageView
+                android:id="@+id/iv_product"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginStart="16dp"
+                android:src="@drawable/logo_round"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <TextView
                 android:id="@+id/product_name_cart"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="8dp"
                 android:fontFamily="@font/montserrat"
                 android:text="Product Name"
@@ -29,15 +40,15 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toStartOf="@+id/delete_product_image_cart"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toEndOf="@+id/iv_product"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/product_unit_and_quantity_cart"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="104dp"
                 android:layout_marginTop="8dp"
                 android:fontFamily="@font/montserrat"
                 android:text="Unit"
@@ -51,18 +62,17 @@
                 android:id="@+id/view_divider"
                 android:layout_width="3dp"
                 android:layout_height="30dp"
-                android:layout_marginStart="20dp"
+                android:layout_marginStart="16dp"
                 android:background="@color/background_grey"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/product_unit_and_quantity_cart"
                 app:layout_constraintTop_toBottomOf="@+id/product_name_cart"
-                app:layout_constraintVertical_bias="0.567" />
+                app:layout_constraintVertical_bias="0.558" />
 
             <TextView
                 android:id="@+id/product_unit_and_quantity_cart2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="20dp"
                 android:fontFamily="@font/montserrat"
                 android:foregroundGravity="center_horizontal"
                 android:gravity="center"
@@ -70,9 +80,50 @@
                 android:textColor="#2E2E2E"
                 android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/view_divider"
+                app:layout_constraintStart_toStartOf="@+id/product_unit_and_quantity_cart"
                 app:layout_constraintTop_toTopOf="@+id/product_qty_minus_cart"
                 app:layout_constraintVertical_bias="0.0" />
+
+            <TextView
+                android:id="@+id/product_price_tv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/montserrat"
+                android:text="Price"
+                android:textColor="#2E2E2E"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/product_name_cart"
+                app:layout_constraintTop_toBottomOf="@+id/product_name_cart" />
+
+            <View
+                android:id="@+id/view_divider2"
+                android:layout_width="3dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="44dp"
+                android:layout_marginBottom="16dp"
+                android:background="@color/background_grey"
+                app:layout_constraintBottom_toBottomOf="@+id/view_divider"
+                app:layout_constraintStart_toEndOf="@+id/product_price_tv"
+                app:layout_constraintTop_toTopOf="@+id/view_divider"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <TextView
+                android:id="@+id/product_price_tv_cart"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:fontFamily="@font/montserrat"
+                android:foregroundGravity="center_horizontal"
+                android:gravity="center"
+                android:text="100 Rs"
+                android:textColor="#2E2E2E"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/product_price_tv"
+                app:layout_constraintTop_toBottomOf="@+id/product_price_tv" />
 
             <TextView
                 android:id="@+id/total_price_cart"
@@ -119,8 +170,8 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_gravity="center"
-                android:layout_marginStart="160dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="4dp"
                 android:background="@drawable/rounded_primary_background"
                 android:padding="8dp"
                 android:src="@drawable/subtract_product_qty_icon"
@@ -129,7 +180,7 @@
 
             <EditText
                 android:id="@+id/total_qty_cart"
-                android:layout_width="wrap_content"
+                android:layout_width="40dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:fontFamily="@font/montserrat"
@@ -149,6 +200,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_gravity="center"
+                android:layout_marginEnd="32dp"
                 android:background="@drawable/rounded_primary_background"
                 android:src="@drawable/add_product_qty_icon"
                 app:layout_constraintBottom_toBottomOf="@+id/product_qty_minus_cart"

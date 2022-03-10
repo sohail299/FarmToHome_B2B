@@ -1,11 +1,16 @@
 package com.switchsolutions.farmtohome.b2b.presentation.cart.ui
 
+import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import com.switchsolutions.farmtohome.b2b.R
 import com.switchsolutions.farmtohome.b2b.databinding.CartItemListAdapterBinding
 import com.switchsolutions.farmtohome.b2b.roomdb.cart.CartEntityClass
@@ -14,12 +19,15 @@ class MyCartRecyclerViewAdapter( private val clickListener: (CartEntityClass) ->
         RecyclerView.Adapter<MyViewHolder>() {
     private val subscribersList = ArrayList<CartEntityClass>()
     private var quantity = 0
+    private lateinit var viewContext: Context
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
+
+        viewContext = parent.context
         val layoutInflater = LayoutInflater.from(parent.context)
         val binding: CartItemListAdapterBinding =
                 DataBindingUtil.inflate(layoutInflater, R.layout.cart_item_list_adapter, parent, false)
-        return MyViewHolder(binding, quantity)
+        return MyViewHolder(binding, quantity, viewContext)
     }
 
     override fun getItemCount(): Int {
@@ -36,10 +44,17 @@ class MyCartRecyclerViewAdapter( private val clickListener: (CartEntityClass) ->
         subscribersList.addAll(subscribers)
     }
 }
-class MyViewHolder( val binding: CartItemListAdapterBinding, var quantity: Int) : RecyclerView.ViewHolder(binding.root) {
+class MyViewHolder( val binding: CartItemListAdapterBinding, var quantity: Int, var context: Context) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(product: CartEntityClass, position: Int, clickListener: (CartEntityClass) -> Unit) {
+        var requestOptions = RequestOptions()
+        requestOptions = requestOptions.transforms(CenterCrop(), RoundedCorners(16))
         binding.productNameCart.text = product.label
+        Glide.with(context)
+            .load(product.imgUrl)
+            .apply(requestOptions)
+            .placeholder(R.drawable.logo_round)
+            .into(binding.ivProduct)
         CartFragment.productQuantity.add(product.quantity)
         binding.totalQtyCart.setText(product.quantity)
         binding.productUnitAndQuantityCart2.text = product.unit

@@ -2,6 +2,11 @@ package com.switchsolutions.farmtohome.b2b.utils
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.google.gson.Gson
+import com.switchsolutions.farmtohome.b2b.presentation.login.data.response.City
+import com.switchsolutions.farmtohome.b2b.presentation.login.data.response.Data
+import com.switchsolutions.farmtohome.b2b.presentation.login.data.response.Info
+import com.switchsolutions.farmtohome.b2b.presentation.login.data.response.LoginResponse
 
 
 class SharedPrefUtils {
@@ -50,6 +55,17 @@ class SharedPrefUtils {
         mSharedPreferencesEditor.commit()
     }
 
+
+    /**Logout user**/
+    fun logoutUser(){
+        setValue(USER_PROFILE, Gson().toJson(
+            LoginResponse("", Data("",
+            City("",0, ""),"","",0, Info("","","","","","",
+                ""),0,"","","",
+            "","",0,0,"","",""), 0,
+            "", "", 0, "","")
+        ))
+    }
     /**
      * Stores int value in preference
      *

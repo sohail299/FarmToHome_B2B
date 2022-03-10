@@ -1,62 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <variable
             name="myCartVM"
             type="com.switchsolutions.farmtohome.b2b.CartViewModel" />
     </data>
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="#F5F8FB"
-    tools:context=".fragments.CreateRequestFragment">
 
     <LinearLayout
-        android:id="@+id/ll_select_product"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+        android:background="@color/background_grey">
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <TextView
+        android:orientation="vertical"
+        android:background="#F5F8FB"
+        android:visibility="gone"
+        tools:context=".fragments.CreateRequestFragment">
+
+        <LinearLayout
+            android:id="@+id/ll_select_product"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/product"
-            android:textStyle="bold"
-            android:layout_marginTop="20dp"
-            android:textColor="@color/grey"
-            android:fontFamily="@font/montserrat"
-            android:layout_marginStart="15dp"/>
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/product"
+                android:textStyle="bold"
+                android:layout_marginTop="20dp"
+                android:textColor="@color/grey"
+                android:fontFamily="@font/montserrat"
+                android:layout_marginStart="15dp"/>
 
-        <AutoCompleteTextView
-            android:id="@+id/et_select_product"
-            android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="5dp"
-            android:paddingStart="5dp"
-            android:paddingEnd="5dp"
-            android:fontFamily="@font/montserrat"
-            android:textColorHint="@color/light_grey"
-            android:textColor="@color/grey"
-            android:layout_marginEnd="15dp"
-            android:background="@drawable/rounded_edittext_bg"
-            android:ems="10"
-            android:hint="@string/enter_product"
-            android:inputType="textPersonName"
-            android:maxLines="1" />
+            <AutoCompleteTextView
+                android:id="@+id/et_select_product"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="5dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:fontFamily="@font/montserrat"
+                android:textColorHint="@color/light_grey"
+                android:textColor="@color/grey"
+                android:layout_marginEnd="15dp"
+                android:background="@drawable/rounded_edittext_bg"
+                android:ems="10"
+                android:hint="@string/enter_product"
+                android:inputType="textPersonName"
+                android:maxLines="1" />
 
-        <TextView
-            android:id="@+id/tv_product_quantity"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/quantity"
-            android:textStyle="bold"
-            android:textColor="@color/grey"
-            android:layout_marginTop="20dp"
-            android:fontFamily="@font/montserrat"
-            android:layout_marginStart="15dp"/>
+            <TextView
+                android:id="@+id/tv_product_quantity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/quantity"
+                android:textStyle="bold"
+                android:textColor="@color/grey"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/montserrat"
+                android:layout_marginStart="15dp"/>
 
             <EditText
                 android:id="@+id/et_select_product_quantity"
@@ -77,63 +84,86 @@
                 android:hint="@string/enter_quantity"
                 android:inputType="number"/>
 
-    </LinearLayout>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/delivery_date"
-        android:textStyle="bold"
-        android:textColor="@color/grey"
-        android:layout_marginTop="20dp"
-        android:fontFamily="@font/montserrat"
-        android:layout_marginStart="15dp"/>
-
-    <LinearLayout
-        android:id="@+id/ll_delivery_date"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginEnd="10dp"
-        android:paddingBottom="5dp"
-        android:layout_marginTop="8dp"
-        tools:ignore="RtlSymmetry">
-
+        </LinearLayout>
         <TextView
-            android:id="@+id/tv_date_selected"
-            android:layout_width="0dp"
-            android:layout_height="35dp"
-            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/delivery_date"
+            android:textStyle="bold"
             android:textColor="@color/grey"
-            android:gravity="center_vertical"
+            android:layout_marginTop="20dp"
             android:fontFamily="@font/montserrat"
-            android:paddingStart="5dp"
-            android:background="@drawable/rounded_edittext_bg"
-            android:text="@string/dd_mm_yyyy"
-            android:layout_marginStart="15dp"
-            android:textSize="18sp" />
-        <ImageView
-            android:id="@+id/iv_date_picker"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/calendar"
-            android:contentDescription="@string/calender_icon" />
+            android:layout_marginStart="15dp"/>
+
+        <LinearLayout
+            android:id="@+id/ll_delivery_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginEnd="10dp"
+            android:paddingBottom="5dp"
+            android:layout_marginTop="8dp"
+            tools:ignore="RtlSymmetry">
+
+            <TextView
+                android:id="@+id/tv_date_selected"
+                android:layout_width="0dp"
+                android:layout_height="35dp"
+                android:layout_weight="1"
+                android:textColor="@color/grey"
+                android:gravity="center_vertical"
+                android:fontFamily="@font/montserrat"
+                android:paddingStart="5dp"
+                android:background="@drawable/rounded_edittext_bg"
+                android:text="@string/dd_mm_yyyy"
+                android:layout_marginStart="15dp"
+                android:textSize="18sp" />
+            <ImageView
+                android:id="@+id/iv_date_picker"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/calendar"
+                android:contentDescription="@string/calender_icon" />
+        </LinearLayout>
+        <Button
+            android:id="@+id/btn_add_to_cart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="60dp"
+            android:layout_marginEnd="10dp"
+            android:minHeight="48dp"
+            android:paddingLeft="30dp"
+            android:paddingTop="10dp"
+            android:paddingRight="30dp"
+            android:paddingBottom="10dp"
+            android:text="@string/add_to_cart"
+            android:textColor="@color/colorAccent"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/rounded_edittext_bg"/>
     </LinearLayout>
-    <Button
-        android:id="@+id/btn_add_to_cart"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="60dp"
-        android:layout_marginEnd="10dp"
-        android:minHeight="48dp"
-        android:paddingLeft="30dp"
-        android:paddingTop="10dp"
-        android:paddingRight="30dp"
-        android:paddingBottom="10dp"
-        android:text="@string/add_to_cart"
-        android:textColor="@color/colorAccent"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/rounded_edittext_bg"/>
+        android:layout_height="match_parent"
+        android:background="@color/background_grey"
+        android:orientation="vertical">
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/searchView"
+            android:layout_margin="10dp"
+            android:background="@drawable/rounded_edittext_bg"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            app:queryBackground="@android:color/transparent"
+            android:queryHint="Search Product"
+            app:iconifiedByDefault="false"
+            android:theme="@style/ThemeOverlay.SearchView"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerview_list_products"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/background_grey"/>
+    </LinearLayout>
 </LinearLayout>
+
 </layout>

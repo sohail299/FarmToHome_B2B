@@ -22,4 +22,7 @@
     <string name="delivery_date">Delivery Date</string>
     <string name="dd_mm_yyyy">dd-mm-yyyy</string>
     <string name="calender_icon">calender_icon</string>
+    <string name="signing_out_warning">Are you sure to sign out?</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="cancel"><u>Cancel</u></string>
 </resources>

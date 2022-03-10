@@ -5,21 +5,22 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.content.Intent
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.*
+import com.google.firebase.auth.PhoneAuthProvider.ForceResendingToken
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.JsonObject
 import com.switchsolutions.farmtohome.b2b.AppLauncher
 import com.switchsolutions.farmtohome.b2b.MainActivity
@@ -35,19 +36,20 @@ import com.switchsolutions.farmtohome.b2b.presentation.login.data.request.OTPVer
 import com.switchsolutions.farmtohome.b2b.presentation.login.data.request.PasswordResetRequestModel
 import com.switchsolutions.farmtohome.b2b.presentation.login.data.response.LoginResponse
 import com.switchsolutions.farmtohome.b2b.presentation.login.viewmodel.LogInViewModel
+import com.switchsolutions.farmtohome.b2b.utils.Utilities
 import java.util.concurrent.TimeUnit
 
 
 class LoginActivity : AppCompatActivity(),
     View.OnClickListener/*, ICallBackListener<LoginResponseModel>*/ {
     lateinit var binding: ActivityLoginNewBinding
-    private lateinit var loginRequestModel: LoginRequestModel
-    private lateinit var otpRequestModel: OTPVerificationRequestModel
-    private lateinit var passResetRequestModel: PasswordResetRequestModel
     private lateinit var loginResponseModel: LoginResponse
     private lateinit var viewModel: LogInViewModel
     private val MY_PREFS_NAME = "FarmToHomeB2B"
     private lateinit var otp: String
+    private lateinit var phone: String
+    private val countryCode = "+92"
+    private var mResendToken: ForceResendingToken? = null
 
 
     //private lateinit var branchViewmodel: BranchViewModel
@@ -62,61 +64,83 @@ class LoginActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         FirebaseApp.initializeApp(this)
         // Inflate the layout for this fragment
+        checkIfLoggedIn()
         binding = ActivityLoginNewBinding.inflate(layoutInflater)
-        viewModel = ViewModelProvider(this).get(LogInViewModel::class.java)
+        viewModel = ViewModelProvider(this)[LogInViewModel::class.java]
         setContentView(binding.root)
-        val preferences = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE)
-        var name = preferences.getInt("User", 0)
-        var isLoggedIn = preferences.getBoolean("isLoggedIn", false)
-        if (isLoggedIn) {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-            finish()
-        }
 
         viewModel.getFirebaseToken()
         startObservers()
         binding.loginLoginBtn.setOnClickListener(this)
         binding.loginForgotPasswordTv.setOnClickListener(this)
         binding.backButtonForgotPassword.setOnClickListener(this)
-        binding.forgotPasswordResetBtn.setOnClickListener(this)
+        binding.sendOtpBtn.setOnClickListener(this)
         binding.otpVerificationButton.setOnClickListener(this)
         binding.resetPasswordChangePasswordBtn.setOnClickListener(this)
+        binding.showHidePasswordIcon.setOnClickListener(this)
+        binding.sendRefreshSmsCall.setOnClickListener(this)
+        binding.resetPasswordChangePasswordEt.setOnClickListener(this)
+        binding.resetPasswordConfirmChangePasswordErrorEt.setOnClickListener(this)
     }
 
 
-
+    private fun checkIfLoggedIn() {
+        val userModel = LoginResponse.getStoredInstance(this)
+        if (userModel.data.id != null
+            && userModel.data.id != 0) {
+            val i = Intent(this, MainActivity::class.java)
+            startActivity(i)
+            finish()
+        }
+    }
     override fun onClick(v: View?) {
         when (v?.id!!) {
             binding.loginLoginBtn.id -> viewModel.signInClicked()
-            binding.loginForgotPasswordTv.id -> openPasswordScreen()
-            binding.backButtonForgotPassword.id -> openLoginScreen()
+            binding.loginForgotPasswordTv.id -> switchScreen(binding.layoutLogin, binding.layoutForgotPassword)
+            binding.backButtonForgotPassword.id -> switchScreen(binding.layoutForgotPassword, binding.layoutLogin)
             binding.otpVerificationButton.id -> viewModel.startOtpVerification()
             binding.resetPasswordChangePasswordBtn.id -> callChangePasswordApi()
-            binding.forgotPasswordResetBtn.id -> viewModel.resetPasswordBtnClicked()
+            binding.sendOtpBtn.id -> viewModel.resetPasswordBtnClicked()
+            binding.showHidePasswordIcon.id -> Utilities.instance!!.showAndHideIcon(binding.loginPasswordEt, binding.showHidePasswordIcon)
+            binding.sendRefreshSmsCall.id -> resendVerificationCode(mResendToken)
+            binding.resetPasswordShowHideIcon.id -> Utilities.instance!!.showAndHideIcon(binding.resetPasswordChangePasswordEt, binding.resetPasswordShowHideIcon)
+            binding.resetPasswordConfirmShowHideIcon.id -> Utilities.instance!!.showAndHideIcon(binding.resetPasswordConfirmChangePasswordEt, binding.resetPasswordConfirmShowHideIcon)
 
         }
     }
 
+    private fun setCountDownTimer() {
+        binding.sendRefreshSmsCall.visibility = View.GONE
+        object : CountDownTimer(120000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                binding.otpCountDownTimerLabel.text = "OTP expires in: " + millisUntilFinished / 1000 + " seconds"
+            }
+
+            override fun onFinish() {
+                binding.otpCountDownTimerLabel.text = "Resend OTP"
+                binding.sendRefreshSmsCall.visibility = View.VISIBLE
+            }
+        }.start()
+    }
     private fun callChangePasswordApi() {
         binding.apply {
-            if (resetPasswordChangePasswordEt.getText().toString().trim { it <= ' ' }.length < 1 ||
-                resetPasswordChangePasswordEt.getText().toString().trim { it <= ' ' }.length < 8
+            if (resetPasswordChangePasswordEt.text.toString().trim { it <= ' ' }.isEmpty() ||
+                resetPasswordChangePasswordEt.text.toString().trim { it <= ' ' }.length < 8
             ) {
-                resetPasswordChangePasswordErrorEt.setText("Kindly Enter 8 Character Password First")
-                resetPasswordChangePasswordErrorEt.setVisibility(View.VISIBLE)
-            } else if (resetPasswordChangePasswordEt.getText().toString() != resetPasswordConfirmChangePasswordEt.getText()
+                resetPasswordChangePasswordErrorEt.text = "Kindly Enter 8 Character Password First"
+                resetPasswordChangePasswordErrorEt.visibility = View.VISIBLE
+            } else if (resetPasswordChangePasswordEt.text.toString() != resetPasswordConfirmChangePasswordEt.text
                     .toString()
             ) {
-                resetPasswordConfirmChangePasswordErrorEt.setText("Password doesn't match the above entered password")
-                resetPasswordConfirmChangePasswordErrorEt.setVisibility(View.VISIBLE)
+                resetPasswordConfirmChangePasswordErrorEt.text = "Password doesn't match the above entered password"
+                resetPasswordConfirmChangePasswordErrorEt.visibility = View.VISIBLE
             } else {
-                resetPasswordChangePasswordErrorEt.setVisibility(View.GONE)
-                resetPasswordChangePasswordEt.setVisibility(View.GONE)
+                resetPasswordChangePasswordErrorEt.visibility = View.GONE
+                resetPasswordChangePasswordEt.visibility = View.GONE
                 val changePasswordObject = JsonObject()
                 changePasswordObject.addProperty("password", resetPasswordChangePasswordEt.getText().toString())
-                changePasswordObject.addProperty("msisdn", "03365814305")
-                changePasswordObject.addProperty("token", viewModel.verificationCode)
+                changePasswordObject.addProperty("msisdn", phone)
+                changePasswordObject.addProperty("token", viewModel.token)
                 changePasswordObject.addProperty("platform", "2")
                 changePasswordObject.addProperty("fcmTokenAndroid", viewModel.FCM_TOKEN)
                 resetPasswordChangePasswordBtn.startAnimation()
@@ -135,12 +159,14 @@ class LoginActivity : AppCompatActivity(),
             override fun onSuccess(t: LoginResponse?) {
                // callSignInApi.value = false
                 //saving user details
-                Event(t!!)
+                //Event(t!!)
+                switchScreen(binding.layoutPasswordReset, binding.layoutLogin)
             }
 
             override fun onFailure(t: ErrorDto) {
-
-                Event(t)
+                binding.loginLoginBtn.revertAnimation()
+                binding.loginLoginBtn.setBackgroundResource(R.drawable.rounded_edittext_bg)
+                //Event(t)
             }
 
             override fun tokenRefreshed() {
@@ -153,14 +179,13 @@ class LoginActivity : AppCompatActivity(),
     override fun onBackPressed() {
         super.onBackPressed()
         if (binding.layoutForgotPassword.isVisible)
-            openLoginScreen()
+            switchScreen(binding.layoutForgotPassword, binding.layoutLogin)
         else
             finish()
 
     }
-    private fun openPasswordScreen() {
-        binding.layoutLogin.animate()
-            .translationY(0F)
+    private fun switchScreen(frontLayout: ConstraintLayout, backLayout: ConstraintLayout){
+        frontLayout.animate().translationY(0F)
             .alpha(0.0f)
             .setListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator?) {
@@ -168,36 +193,11 @@ class LoginActivity : AppCompatActivity(),
                     //binding.layoutLogin.visibility = View.GONE
                 }
             })
-        binding.layoutLogin.visibility = View.GONE
-        binding.layoutForgotPassword.visibility = View.VISIBLE
-        binding.layoutForgotPassword.alpha = 0.0f
-        binding.layoutForgotPassword.animate().duration = 500
-        binding.layoutForgotPassword.animate()
-            .translationY(0F)
-            .alpha(1.0f)
-            .setListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator?) {
-                    super.onAnimationEnd(animation)
-                    //binding.layoutForgotPassword.visibility = View.VISIBLE
-                }
-            })
-       // binding.layoutLogin.visibility = View.GONE
-        //binding.layoutForgotPassword.visibility = View.VISIBLE
-    }
-    private fun openLoginScreen() {
-            binding.layoutForgotPassword.animate().translationY(0F)
-            .alpha(0.0f)
-            .setListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator?) {
-                    super.onAnimationEnd(animation)
-                    //binding.layoutLogin.visibility = View.GONE
-                }
-            })
-        binding.layoutForgotPassword.visibility = View.GONE
-        binding.layoutLogin.visibility = View.VISIBLE
-        binding.layoutLogin.alpha = 0.0f
-        binding.layoutLogin.animate().duration = 500
-        binding.layoutLogin.animate()
+        frontLayout.visibility = View.GONE
+        backLayout.visibility = View.VISIBLE
+        backLayout.alpha = 0.0f
+        backLayout.animate().duration = 500
+        backLayout.animate()
             .translationY(1F)
             .alpha(1.0f)
             .setListener(object : AnimatorListenerAdapter() {
@@ -209,53 +209,6 @@ class LoginActivity : AppCompatActivity(),
     }
 
 
-    private fun openPasswordResetScreen() {
-        binding.layoutOtpVerification.animate().translationY(0F)
-            .alpha(0.0f)
-            .setListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator?) {
-                    super.onAnimationEnd(animation)
-                    //binding.layoutLogin.visibility = View.GONE
-                }
-            })
-        binding.layoutOtpVerification.visibility = View.GONE
-        binding.layoutPasswordReset.visibility = View.VISIBLE
-        binding.layoutPasswordReset.alpha = 0.0f
-        binding.layoutPasswordReset.animate().duration = 500
-        binding.layoutPasswordReset.animate()
-            .translationY(1F)
-            .alpha(1.0f)
-            .setListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator?) {
-                    super.onAnimationEnd(animation)
-                    //binding.layoutForgotPassword.visibility = View.VISIBLE
-                }
-            })
-    }
-
-    private fun openOtpScreen() {
-        binding.layoutForgotPassword.animate().translationY(0F)
-            .alpha(0.0f)
-            .setListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator?) {
-                    super.onAnimationEnd(animation)
-                    //binding.layoutLogin.visibility = View.GONE
-                }
-            })
-        binding.layoutForgotPassword.visibility = View.GONE
-        binding.layoutOtpVerification.visibility = View.VISIBLE
-        binding.layoutOtpVerification.alpha = 0.0f
-        binding.layoutOtpVerification.animate().duration = 500
-        binding.layoutOtpVerification.animate()
-            .translationY(1F)
-            .alpha(1.0f)
-            .setListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator?) {
-                    super.onAnimationEnd(animation)
-                    //binding.layoutForgotPassword.visibility = View.VISIBLE
-                }
-            })
-    }
 
     private fun startObservers() {
         viewModel.getLoginRequestModel().observe(this, Observer {
@@ -287,7 +240,7 @@ class LoginActivity : AppCompatActivity(),
         viewModel.callResetPassApi.observe(this, Observer {
             if (it!!) {
                // binding.errorMessageTextview.visibility = View.GONE
-                binding.forgotPasswordResetBtn.startAnimation()
+                binding.sendOtpBtn.startAnimation()
                 //waitDialog = ProgressDialog.show(this, "", "Sign in")
             }
         })
@@ -308,6 +261,11 @@ class LoginActivity : AppCompatActivity(),
                     startActivity(intent)
                     finish()
                 }
+                else
+                {
+                    binding.errorMessageTextview.visibility = View.VISIBLE
+                    binding.errorMessageTextview.text = "Account does not exist"
+                }
             }
         }
 
@@ -323,24 +281,29 @@ class LoginActivity : AppCompatActivity(),
             }
         }
 
+        viewModel.statusOtpVerificationCall.observe(this) { it ->
+            it.getContentIfNotHandled()?.let {
+                if (!it)
+                    Toast.makeText(this@LoginActivity, "Wrong OTP", Toast.LENGTH_LONG).show()
+            }
+        }
+
         viewModel.statusOpenPasswordResetScreen.observe(this) { it ->
             it.getContentIfNotHandled()?.let {
                 if (it)
-                    openPasswordResetScreen()
+                    switchScreen(binding.layoutOtpVerification,binding.layoutPasswordReset)
 
             }
         }
 
         viewModel.statusPassResetSuccess.observe(this) { it ->
             it.getContentIfNotHandled()?.let {
-                binding.forgotPasswordResetBtn.revertAnimation()
-                binding.forgotPasswordResetBtn.setBackgroundResource(R.drawable.rounded_edittext_bg)
                 loginResponseModel = it
                 //redirect to main landing screen
                 if (loginResponseModel.statusCode== 200) {
-                    openOtpScreen()
+
                     Log.i("TOKEN", loginResponseModel.token)
-                    requestOtpFromFirebase("03365814305")
+                    requestOtpFromFirebase(viewModel.phoneNum)
                 }
             }
         }
@@ -369,15 +332,10 @@ class LoginActivity : AppCompatActivity(),
 
         }
     }
-
-    private fun requestOtpFromFirebase(phoneNumber: String) {
-        val phoneNum = "+923365814305"
-        val testVerificationCode = "123456"
-
-// Whenever verification is triggered with the whitelisted number,
-// provided it is not set for auto-retrieval, onCodeSent will be triggered.
+    private fun resendVerificationCode(token: ForceResendingToken?) {
+        setCountDownTimer()
         val options = PhoneAuthOptions.newBuilder(Firebase.auth)
-            .setPhoneNumber(phoneNum)
+            .setPhoneNumber(viewModel.phoneNum)
             .setTimeout(30L, TimeUnit.SECONDS)
             .setActivity(this)
             .setCallbacks(object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
@@ -386,6 +344,8 @@ class LoginActivity : AppCompatActivity(),
                     //verificationCode = verificationId
                     // Save the verification id somewhere
                     // ...
+                    viewModel.verificationCode = verificationId
+                    mResendToken = forceResendingToken
 
                     // The corresponding whitelisted code above should be used to complete sign-in.
                     //this.enableUserManuallyInputCode()
@@ -401,32 +361,73 @@ class LoginActivity : AppCompatActivity(),
                     Log.i("MYTAG", e.message.toString())
                     // ...
                 }
+            }).setForceResendingToken(mResendToken!!)
+            .build()
+        PhoneAuthProvider.verifyPhoneNumber(options)
+    }
+    private fun requestOtpFromFirebase(phoneNumber: String) {
+        phone = phoneNumber
+        viewModel.phoneNum = countryCode + phoneNumber.substring(1)
+
+
+
+// Configure faking the auto-retrieval with the whitelisted numbers.
+// Whenever verification is triggered with the whitelisted number,
+// provided it is not set for auto-retrieval, onCodeSent will be triggered.
+        val options = PhoneAuthOptions.newBuilder(Firebase.auth)
+            .setPhoneNumber(viewModel.phoneNum)
+            .setTimeout(30L, TimeUnit.SECONDS)
+            .setActivity(this)
+            .setCallbacks(object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                override fun onCodeSent(verificationId: String,forceResendingToken: PhoneAuthProvider.ForceResendingToken) {
+                    Log.i("MYTAG", verificationId)
+                    //verificationCode = verificationId/
+                    // Save the verification id somewhere
+                    // ...
+                    Toast.makeText(this@LoginActivity, "OTP sent to ${phone}", Toast.LENGTH_SHORT
+                    ).show()
+                    binding.sendOtpBtn.revertAnimation()
+                    binding.sendOtpBtn.setBackgroundResource(R.drawable.rounded_edittext_bg)
+                    Utilities.instance!!.moveOTPBack(binding.otp2, binding.otp1)
+                    Utilities.instance!!.moveOTPBack(binding.otp3, binding.otp2)
+                    Utilities.instance!!.moveOTPBack(binding.otp4, binding.otp3)
+                    Utilities.instance!!.moveOTPBack(binding.otp5, binding.otp4)
+                    Utilities.instance!!.moveOTPBack(binding.otp6, binding.otp5)
+                    setCountDownTimer()
+                    switchScreen(binding.layoutForgotPassword, binding.layoutOtpVerification)
+                    viewModel.verificationCode = verificationId
+                    mResendToken = forceResendingToken
+
+                    // The corresponding whitelisted code above should be used to complete sign-in.
+                    //this.enableUserManuallyInputCode()
+                }
+
+                override fun onVerificationCompleted(phoneAuthCredential: PhoneAuthCredential) {
+                    Log.i("MYTAG", phoneAuthCredential.toString())
+                    // Sign in with the credential
+                    // ...
+                }
+
+                override fun onVerificationFailed(e: FirebaseException) {
+                    Log.i("MYTAG", e.message.toString())
+                    binding.sendOtpBtn.revertAnimation()
+                    binding.sendOtpBtn.setBackgroundResource(R.drawable.rounded_edittext_bg)
+                    if (e.message == "We have blocked all requests from this device due to unusual activity. Try again later.") {
+                        Toast.makeText(this@LoginActivity,
+                            "Your number has been restricted due to too many attempts. Kindly try again later",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else Toast.makeText(
+                        this@LoginActivity,
+                        "Unable to send message at the given number",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    // ...
+                }
             })
             .build()
         PhoneAuthProvider.verifyPhoneNumber(options)
     }
-
-
-//    private fun storeBranches() {
-//        val daoBranch = BranchDatabase.getInstance(this).branchDAO
-//        val repositoryBranch = BranchRespository(daoBranch)
-//        val factoryBranch = BranchViewModelFactory(repositoryBranch)
-//        branchViewmodel = ViewModelProvider(this, factoryBranch).get(BranchViewModel::class.java)
-//        binding.branchViewModel = branchViewmodel
-//        if (loginResponseModel.data!!.siteBranches.isNotEmpty()) {
-//            branchViewmodel.clearAll()
-//        }
-//        for (element in loginResponseModel.data!!.siteBranches) {
-//            branchViewmodel.insertBranch(
-//                BranchEntityClass(
-//                    0,
-//                    element.value!!,
-//                    element.label!!,
-//                    element.code!!
-//                )
-//            )
-//        }
-//    }
 
     private fun setEmailError() {
         // NotificationUtil.showShortToast(context!!, getString(R.string.email_is_invalid), Type.DANGER)

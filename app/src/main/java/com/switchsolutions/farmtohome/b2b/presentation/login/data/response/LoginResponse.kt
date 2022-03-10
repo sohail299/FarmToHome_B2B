@@ -30,4 +30,5 @@ data class LoginResponse(
             return loginUserModel
         }
     }
+
 }

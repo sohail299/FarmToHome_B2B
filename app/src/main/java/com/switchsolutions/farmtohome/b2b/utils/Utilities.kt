@@ -1,25 +1,20 @@
 package com.switchsolutions.farmtohome.b2b.utils
 
-import android.app.Service
-import android.content.Context
-import android.os.Process
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.view.KeyEvent
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
-import java.lang.ArithmeticException
-import java.lang.Exception
-import java.text.ParseException
-import java.text.SimpleDateFormat
+import android.widget.ProgressBar
+import com.switchsolutions.farmtohome.b2b.R
 import java.util.*
 
 class Utilities {
 
-    fun MoveOTPBack(currentEditText: EditText, previousEditText: EditText) {
+    fun moveOTPBack(currentEditText: EditText, previousEditText: EditText) {
         currentEditText.setOnKeyListener(View.OnKeyListener { v: View?, keyCode: Int, event: KeyEvent ->
             try {
                 if (event.action != KeyEvent.ACTION_DOWN)
@@ -45,7 +40,19 @@ class Utilities {
             }
         })
     }
+    fun showAndHideIcon(editText: EditText, imageView: ImageView) {
+        if (editText.transformationMethod == PasswordTransformationMethod.getInstance()) {
+            imageView.setBackgroundResource(R.drawable.password_show_icon)
+            //Show Password
+            editText.transformationMethod = HideReturnsTransformationMethod.getInstance()
+        } else {
+            imageView.setBackgroundResource(R.drawable.password_hide_icon)
 
+            //Hide Password
+            editText.transformationMethod = PasswordTransformationMethod.getInstance()
+        }
+        editText.setSelection(editText.text.length)
+    }
     companion object {
         private var utilities: Utilities? = null
         val instance: Utilities?

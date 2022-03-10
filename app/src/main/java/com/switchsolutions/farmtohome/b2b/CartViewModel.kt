@@ -33,7 +33,6 @@ class CartViewModel(private val repository: CartRepository) : ViewModel() {
 
     fun update(entityClass: CartEntityClass){
             updateCartProduct(entityClass)
-
     }
 
     fun saveOrUpdate(productName: String,productId: Int,  quantity: String, unit: String, imgUrl: String,  deliveryDate: String) {
@@ -44,7 +43,6 @@ class CartViewModel(private val repository: CartRepository) : ViewModel() {
         }
         else {
             cartStatus.value = true
-            clearAll()
             insertProduct(CartEntityClass(0,imgUrl, productName,productId, quantity,unit, deliveryDate))
         }
     }

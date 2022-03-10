@@ -76,9 +76,9 @@ class RestApiClient {
         }
         private fun getHeaderInterceptor(): Interceptor {
             return Interceptor { chain ->
-                val token = "123"
+                val token = MainActivity.token
                 Timber.tag("Token").d(token)
-                if (token != null) {
+                if (token.isNotEmpty()) {
                     val request = chain.request().newBuilder().addHeader("Authorization", "Bearer $token").build()
                     chain.proceed(request)
                 } else {

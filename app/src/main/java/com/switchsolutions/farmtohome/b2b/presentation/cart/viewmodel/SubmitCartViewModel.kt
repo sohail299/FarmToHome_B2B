@@ -30,7 +30,7 @@ class SubmitCartViewModel : ViewModel() {
         //call api here
         object : RetrofitApiManager<OrderSubmissionResponseModel>(AppLauncher.ApplicationContext) {
             init {
-                callServer(RestApiClient.getClient(addHeaders = true).createOrderRequest(CartFragment.placeOrderJson))
+                callServer(RestApiClient.getClient2(addHeaders = true).createOrderRequest(CartFragment.placeOrderJson))
             }
             override fun onSuccess(t: OrderSubmissionResponseModel?) {
                 callCartSubmitApi.value = false

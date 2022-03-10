@@ -9,6 +9,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.switchsolutions.farmtohome.b2b.R
 import com.switchsolutions.farmtohome.b2b.presentation.dashboard.data.response.Data
+import com.switchsolutions.farmtohome.b2b.presentation.dashboard.ui.DashboardFragment.Companion.singleOrder
 import com.switchsolutions.farmtohome.b2b.presentation.dashboard.viewmodel.DashboardViewModel
 
 
@@ -32,7 +33,9 @@ class DashboardItemAdapter(private var viewModel: DashboardViewModel,
         holder.textViewCustomerName.text = listdata[position].id.toString()
         holder.tvDeliveryDate.text = listdata[position].delivery_date
         holder.tvRequestId.text = listdata[position].id.toString()
-        holder.relativeLayout.setOnClickListener { view ->
+        holder.relativeLayout.setOnClickListener {
+            singleOrder.showOrderDetails(listdata[position].id!!)
+            singleOrder.startObserverForSingleOrder()
 //            Toast.makeText(
 //                view.context,
 //                "View Order " + myListData.description +"  "+position,

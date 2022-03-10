@@ -30,7 +30,9 @@ class LogInViewModel : ViewModel() {
     lateinit var FCM_TOKEN: String
     lateinit var otp: String
     lateinit var verificationCode: String
-    private lateinit var auth: FirebaseAuth
+    lateinit var token: String
+    lateinit var phoneNum: String
+    private var auth: FirebaseAuth = FirebaseAuth.getInstance()
 
     private val loginRequestModel: MutableLiveData<LoginRequestModel> = MutableLiveData()
     private val otpRequestModel: MutableLiveData<OTPVerificationRequestModel> = MutableLiveData()
@@ -54,6 +56,10 @@ class LogInViewModel : ViewModel() {
     val statusOtpVerificationBtn: MutableLiveData<Event<Boolean>>
         get() = otpVerificationBtn
 
+    private val otpVerfificationCall = MutableLiveData<Event<Boolean>>()
+    val statusOtpVerificationCall: MutableLiveData<Event<Boolean>>
+        get() = otpVerfificationCall
+
     private val openPasswordResetScreen = MutableLiveData<Event<Boolean>>()
     val statusOpenPasswordResetScreen: MutableLiveData<Event<Boolean>>
         get() = openPasswordResetScreen
@@ -67,7 +73,6 @@ class LogInViewModel : ViewModel() {
         get() = apiFailure
 
     init {
-        auth = FirebaseAuth.getInstance()
         loginRequestModel.value = if (BuildConfig.DEBUG) LoginRequestModel("", "","",",","","")
         else LoginRequestModel("", "","","","","")
         resetPasswordRequestModel.value = if (BuildConfig.DEBUG) PasswordResetRequestModel("")
@@ -166,11 +171,11 @@ class LogInViewModel : ViewModel() {
             } else {
                 otpVerificationBtn.value = Event(true)
                 otp = (otpRequestModel.value?.otp1.toString() +
-                        otpRequestModel.value?.otp1.toString() +
-                        otpRequestModel.value?.otp1.toString() +
-                        otpRequestModel.value?.otp1.toString() +
-                        otpRequestModel.value?.otp1.toString() +
-                        otpRequestModel.value?.otp1.toString())
+                        otpRequestModel.value?.otp2.toString() +
+                        otpRequestModel.value?.otp3.toString() +
+                        otpRequestModel.value?.otp4.toString() +
+                        otpRequestModel.value?.otp5.toString() +
+                        otpRequestModel.value?.otp6.toString())
                 try {
                     val credential =
                         PhoneAuthProvider.getCredential(verificationCode, otp)
@@ -184,21 +189,15 @@ class LogInViewModel : ViewModel() {
     private fun SignInWithPhone(credential: PhoneAuthCredential) {
         auth.signInWithCredential(credential)
             .addOnCompleteListener(OnCompleteListener { task: Task<AuthResult?> ->
-                otpVerificationBtn.value = Event(false)
-                if (task.isSuccessful) {
-                    openPasswordResetScreen.value = Event(true)
-                    //FirebaseAuth.getInstance().signOut()
-                    //                            startActivity(new Intent(MainActivity.this,SignedIn.class));
-//                            finish();
-                } else {
-//                    CustomDialogs.getInstance()
-//                        .setErrorDialog(
-//                            this@NewUserOTPVerification,
-//                            "OTP not verified. Please try again"
-//                        )
 
-//                            Toast.makeText(NewUserOTPVerification.this, , Toast.LENGTH_SHORT).show();
-//                            Toast.makeText(MainActivity.this,"Incorrect OTP",Toast.LENGTH_SHORT).show();
+                otpVerfificationCall.value = Event(true)
+                if (task.isSuccessful) {
+                    otpVerfificationCall.value = Event(true)
+                    openPasswordResetScreen.value = Event(true)
+                }
+                else {
+                    otpVerificationBtn.value = Event(false)
+                    otpVerfificationCall.value = Event(false)
                 }
             })
     }
@@ -229,10 +228,12 @@ class LogInViewModel : ViewModel() {
         resetPasswordRequestModel.value?.msisdn = resetPasswordRequestModel.value?.msisdn?.trim() ?: ""
         if (!ValidationUtil.isPhoneNumberValid(resetPasswordRequestModel.value?.msisdn!!) && !ValidationUtil.isANumber(
                 resetPasswordRequestModel.value?.msisdn!!)) {
+
             resetPhoneErrorStatus.value = true
             return
         }
         callResetPassApi.value = true
+        phoneNum = resetPasswordRequestModel.value?.msisdn?.trim() ?: ""
 
         //call api here
         object : RetrofitApiManager<LoginResponse>(AppLauncher.ApplicationContext) {
@@ -246,7 +247,8 @@ class LogInViewModel : ViewModel() {
             override fun onSuccess(t: LoginResponse?) {
                 callResetPassApi.value = false
                 //saving user details
-                verificationCode = t!!.token
+                //verificationCode = t!!.token
+                token = t!!.token
                 apiPassResetSuccess.value = Event(t)
             }
 
