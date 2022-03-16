@@ -52,9 +52,6 @@ class LoginActivity : AppCompatActivity(),
     private var mResendToken: ForceResendingToken? = null
 
 
-    //private lateinit var branchViewmodel: BranchViewModel
-
-
     companion object {
         const val SIGNIN_FRAGMENT_TAG: String = "signInFrag"
     }
@@ -64,7 +61,6 @@ class LoginActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         FirebaseApp.initializeApp(this)
         // Inflate the layout for this fragment
-        checkIfLoggedIn()
         binding = ActivityLoginNewBinding.inflate(layoutInflater)
         viewModel = ViewModelProvider(this)[LogInViewModel::class.java]
         setContentView(binding.root)
@@ -81,6 +77,9 @@ class LoginActivity : AppCompatActivity(),
         binding.sendRefreshSmsCall.setOnClickListener(this)
         binding.resetPasswordChangePasswordEt.setOnClickListener(this)
         binding.resetPasswordConfirmChangePasswordErrorEt.setOnClickListener(this)
+        binding.resetPasswordShowHideIcon.setOnClickListener(this)
+        binding.resetPasswordConfirmShowHideIcon.setOnClickListener(this)
+        binding.imageViewOtpBack.setOnClickListener(this)
     }
 
 
@@ -96,8 +95,8 @@ class LoginActivity : AppCompatActivity(),
     override fun onClick(v: View?) {
         when (v?.id!!) {
             binding.loginLoginBtn.id -> viewModel.signInClicked()
-            binding.loginForgotPasswordTv.id -> switchScreen(binding.layoutLogin, binding.layoutForgotPassword)
-            binding.backButtonForgotPassword.id -> switchScreen(binding.layoutForgotPassword, binding.layoutLogin)
+            binding.loginForgotPasswordTv.id -> switchScreen(binding.layoutLogin, binding.layoutForgotPassword,"")
+            binding.backButtonForgotPassword.id -> switchScreen(binding.layoutForgotPassword, binding.layoutLogin,"")
             binding.otpVerificationButton.id -> viewModel.startOtpVerification()
             binding.resetPasswordChangePasswordBtn.id -> callChangePasswordApi()
             binding.sendOtpBtn.id -> viewModel.resetPasswordBtnClicked()
@@ -105,7 +104,7 @@ class LoginActivity : AppCompatActivity(),
             binding.sendRefreshSmsCall.id -> resendVerificationCode(mResendToken)
             binding.resetPasswordShowHideIcon.id -> Utilities.instance!!.showAndHideIcon(binding.resetPasswordChangePasswordEt, binding.resetPasswordShowHideIcon)
             binding.resetPasswordConfirmShowHideIcon.id -> Utilities.instance!!.showAndHideIcon(binding.resetPasswordConfirmChangePasswordEt, binding.resetPasswordConfirmShowHideIcon)
-
+            binding.imageViewOtpBack.id -> switchScreen(binding.layoutOtpVerification, binding.layoutForgotPassword,"")
         }
     }
 
@@ -138,7 +137,7 @@ class LoginActivity : AppCompatActivity(),
                 resetPasswordChangePasswordErrorEt.visibility = View.GONE
                 resetPasswordChangePasswordEt.visibility = View.GONE
                 val changePasswordObject = JsonObject()
-                changePasswordObject.addProperty("password", resetPasswordChangePasswordEt.getText().toString())
+                changePasswordObject.addProperty("password", resetPasswordChangePasswordEt.text.toString())
                 changePasswordObject.addProperty("msisdn", phone)
                 changePasswordObject.addProperty("token", viewModel.token)
                 changePasswordObject.addProperty("platform", "2")
@@ -160,7 +159,7 @@ class LoginActivity : AppCompatActivity(),
                // callSignInApi.value = false
                 //saving user details
                 //Event(t!!)
-                switchScreen(binding.layoutPasswordReset, binding.layoutLogin)
+                switchScreen(binding.layoutPasswordReset, binding.layoutLogin,"")
             }
 
             override fun onFailure(t: ErrorDto) {
@@ -179,12 +178,11 @@ class LoginActivity : AppCompatActivity(),
     override fun onBackPressed() {
         super.onBackPressed()
         if (binding.layoutForgotPassword.isVisible)
-            switchScreen(binding.layoutForgotPassword, binding.layoutLogin)
+            switchScreen(binding.layoutForgotPassword, binding.layoutLogin,"")
         else
             finish()
-
     }
-    private fun switchScreen(frontLayout: ConstraintLayout, backLayout: ConstraintLayout){
+    private fun switchScreen(frontLayout: ConstraintLayout, backLayout: ConstraintLayout, screen: String){
         frontLayout.animate().translationY(0F)
             .alpha(0.0f)
             .setListener(object : AnimatorListenerAdapter() {
@@ -206,6 +204,10 @@ class LoginActivity : AppCompatActivity(),
                     //binding.layoutForgotPassword.visibility = View.VISIBLE
                 }
             })
+        if (screen == "OTP") {
+            binding.otp1.requestFocus()
+            binding.forgotPasswordPhoneNumberEt.setText("")
+        }
     }
 
 
@@ -254,6 +256,7 @@ class LoginActivity : AppCompatActivity(),
                     val editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit()
                     editor.putInt("User", loginResponseModel.data.id)
                     editor.putBoolean("isLoggedIn", true)
+                    if (loginResponseModel.data.city!=null)
                     editor.putInt("cityId", loginResponseModel.data.city.id)
                     editor.putString("accessToken", loginResponseModel.accessToken)
                     editor.apply()
@@ -281,6 +284,14 @@ class LoginActivity : AppCompatActivity(),
             }
         }
 
+        viewModel.statusOtpTextError.observe(this) { it ->
+            it.getContentIfNotHandled()?.let {
+                if (it)
+                    Toast.makeText(this, "Enter Valid OTP", Toast.LENGTH_SHORT).show()
+
+            }
+        }
+
         viewModel.statusOtpVerificationCall.observe(this) { it ->
             it.getContentIfNotHandled()?.let {
                 if (!it)
@@ -291,7 +302,7 @@ class LoginActivity : AppCompatActivity(),
         viewModel.statusOpenPasswordResetScreen.observe(this) { it ->
             it.getContentIfNotHandled()?.let {
                 if (it)
-                    switchScreen(binding.layoutOtpVerification,binding.layoutPasswordReset)
+                    switchScreen(binding.layoutOtpVerification,binding.layoutPasswordReset,"")
 
             }
         }
@@ -301,6 +312,7 @@ class LoginActivity : AppCompatActivity(),
                 loginResponseModel = it
                 //redirect to main landing screen
                 if (loginResponseModel.statusCode== 200) {
+                    binding.errorMessageTextviewOtp.visibility = View.GONE
 
                     Log.i("TOKEN", loginResponseModel.token)
                     requestOtpFromFirebase(viewModel.phoneNum)
@@ -312,9 +324,33 @@ class LoginActivity : AppCompatActivity(),
             it.getContentIfNotHandled()?.let {
                 binding.loginLoginBtn.revertAnimation()
                 binding.loginLoginBtn.setBackgroundResource(R.drawable.rounded_edittext_bg)
-                if ((it.statusCode == HttpStatusCodes.SC_UNAUTHORIZED) || (it.statusCode == HttpStatusCodes.SC_NO_CONTENT)) {
+                if ((it.statusCode == HttpStatusCodes.SC_UNAUTHORIZED) || (it.statusCode == HttpStatusCodes.SC_NO_CONTENT || (it.statusCode == HttpStatusCodes.SC_BAD_REQUEST))) {
                     binding.errorMessageTextview.visibility = View.VISIBLE
                     binding.errorMessageTextview.text = it.message
+//                val builder = AlertDialog.Builder(context!!)
+//                builder.setMessage(context?.getString(R.string.invalid_credentials))
+//                        .setPositiveButton(context?.getString(R.string.ok)) { dialog, _ ->
+//                            dialog.dismiss()
+//                        }
+//                builder.create().show()
+                } else {
+//                Toast.makeText(
+//                    this, "An Error Occurred",
+//                    Toast.LENGTH_LONG
+//                ).show()
+                    //NotificationUtil.showShortToast(this, "Error Occurred", Type.DANGER)
+                }
+            }
+
+        }
+
+        viewModel.statusOTPFailure.observe(this) { it ->
+            it.getContentIfNotHandled()?.let {
+                binding.sendOtpBtn.revertAnimation()
+                binding.sendOtpBtn.setBackgroundResource(R.drawable.rounded_edittext_bg)
+                if ((it.statusCode == HttpStatusCodes.SC_UNAUTHORIZED) || (it.statusCode == HttpStatusCodes.SC_NO_CONTENT || (it.statusCode == HttpStatusCodes.SC_BAD_REQUEST))) {
+                    binding.errorMessageTextviewOtp.visibility = View.VISIBLE
+                    binding.errorMessageTextviewOtp.text = it.message
 //                val builder = AlertDialog.Builder(context!!)
 //                builder.setMessage(context?.getString(R.string.invalid_credentials))
 //                        .setPositiveButton(context?.getString(R.string.ok)) { dialog, _ ->
@@ -384,7 +420,7 @@ class LoginActivity : AppCompatActivity(),
                     //verificationCode = verificationId/
                     // Save the verification id somewhere
                     // ...
-                    Toast.makeText(this@LoginActivity, "OTP sent to ${phone}", Toast.LENGTH_SHORT
+                    Toast.makeText(this@LoginActivity, "OTP sent to $phone", Toast.LENGTH_SHORT
                     ).show()
                     binding.sendOtpBtn.revertAnimation()
                     binding.sendOtpBtn.setBackgroundResource(R.drawable.rounded_edittext_bg)
@@ -394,7 +430,7 @@ class LoginActivity : AppCompatActivity(),
                     Utilities.instance!!.moveOTPBack(binding.otp5, binding.otp4)
                     Utilities.instance!!.moveOTPBack(binding.otp6, binding.otp5)
                     setCountDownTimer()
-                    switchScreen(binding.layoutForgotPassword, binding.layoutOtpVerification)
+                    switchScreen(binding.layoutForgotPassword, binding.layoutOtpVerification,"OTP")
                     viewModel.verificationCode = verificationId
                     mResendToken = forceResendingToken
 

@@ -27,10 +27,7 @@ class ProductListAdapter(
 ) :
     RecyclerView.Adapter<ProductListAdapter.ViewHolder>() {
     private lateinit var viewContext: Context
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         viewContext = parent.context
         val layoutInflater = LayoutInflater.from(parent.context)
         val listItem: View = layoutInflater.inflate(R.layout.product_list_items, parent, false)
@@ -40,6 +37,8 @@ class ProductListAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         if (listdata.isNotEmpty()){
         holder.tvProductName.text = listdata[position].label
+            holder.tvProductPrice.text = "${listdata[position].price} Rs"
+            holder.tvProductUnit.text = "/${listdata[position].unit}"
             var requestOptions = RequestOptions()
             requestOptions = requestOptions.transforms(CenterCrop(), RoundedCorners(16))
         if (listdata[position].imgUrl!=null && listdata[position].imgUrl.isNotEmpty())
@@ -49,7 +48,6 @@ class ProductListAdapter(
                 .placeholder(R.drawable.logo_round)
                 .into(holder.ivProductImg)
         holder.relativeLayout.setOnClickListener { view ->
-
             productDetails.showProductDetail(listdata[position])
 //            Toast.makeText(
 //                view.context,
@@ -93,10 +91,14 @@ class ProductListAdapter(
         var relativeLayout: ConstraintLayout
         var ivProductImg: ImageView
         var tvProductName: TextView
+        var tvProductPrice: TextView
+        var tvProductUnit: TextView
         init {
             relativeLayout = itemView.findViewById<View>(R.id.constraint_layout_delivered) as ConstraintLayout
             ivProductImg = itemView.findViewById(R.id.iv_product) as ImageView
             tvProductName = itemView.findViewById(R.id.tv_product_name) as TextView
+            tvProductPrice = itemView.findViewById(R.id.product_price_create_order) as TextView
+            tvProductUnit = itemView.findViewById(R.id.product_unit_create_order) as TextView
         }
     }
 

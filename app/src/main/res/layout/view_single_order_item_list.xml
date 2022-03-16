@@ -26,7 +26,7 @@
             android:id="@+id/product_name_edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="4dp"
             android:layout_marginTop="4dp"
             android:fontFamily="@font/montserrat"
             android:text="Product Name"
@@ -36,43 +36,18 @@
             app:layout_constraintStart_toEndOf="@+id/iv_product_single_order"
             app:layout_constraintTop_toTopOf="parent" />
 
-
         <ImageView
             android:id="@+id/iv_product_single_order"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="4dp"
             android:src="@drawable/logo_round"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/product_unit_and_quantity_cart"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="4dp"
-            android:fontFamily="@font/montserrat"
-            android:gravity="center"
-            android:text="Unit"
-            android:textColor="#2E2E2E"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@+id/iv_product_single_order"
-            app:layout_constraintTop_toBottomOf="@+id/product_name_edit" />
-
-        <View
-            android:id="@+id/view_divider"
-            android:layout_width="3dp"
-            android:layout_height="30dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="12dp"
-            android:background="@color/grey"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/product_unit_and_quantity_cart"
-            app:layout_constraintTop_toBottomOf="@+id/product_name_edit"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.428" />
 
         <TextView
             android:id="@+id/product_unit_and_quantity_cart2"
@@ -83,35 +58,87 @@
             android:text="Kg"
             android:textColor="#2E2E2E"
             android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/product_unit_and_quantity_cart"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/product_unit_and_quantity_cart"
-            app:layout_constraintTop_toBottomOf="@+id/product_unit_and_quantity_cart"
-            app:layout_constraintVertical_bias="0.466" />
+            app:layout_constraintBottom_toBottomOf="@+id/total_qty_cart_edit"
+            app:layout_constraintStart_toEndOf="@+id/total_qty_cart_edit"
+            app:layout_constraintTop_toTopOf="@+id/total_qty_cart_edit" />
+
+
 
         <TextView
             android:id="@+id/total_price_cart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="84dp"
-            android:layout_marginBottom="4dp"
+            android:layout_marginTop="8dp"
             android:fontFamily="@font/montserrat"
-            android:text="Quantity"
+            android:text="Quantity:"
             android:textColor="#2E2E2E"
             android:textSize="12sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/product_unit_and_quantity_cart"
-            app:layout_constraintStart_toEndOf="@+id/product_unit_and_quantity_cart" />
+            app:layout_constraintStart_toStartOf="@+id/product_name_edit"
+            app:layout_constraintTop_toBottomOf="@+id/product_name_edit" />
 
-        <TextView
-            android:id="@+id/textView11"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:background="#FFF"
-            app:layout_constraintBottom_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/layout_item_list_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/total_price_cart"
+            app:layout_constraintStart_toEndOf="@+id/product_unit_and_quantity_cart2"
+            app:layout_constraintTop_toTopOf="@+id/total_price_cart">
+
+            <View
+                android:id="@+id/view2"
+                android:layout_width="2dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="20dp"
+                android:background="@color/grey" />
+
+            <TextView
+                android:id="@+id/product_item_list_price_lable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:fontFamily="@font/montserrat"
+                android:text="Price:"
+                android:textColor="#2E2E2E"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/total_price_cart"
+                app:layout_constraintStart_toEndOf="@+id/view2"
+                app:layout_constraintTop_toTopOf="@+id/total_price_cart"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <TextView
+                android:id="@+id/product_item_list_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+                android:fontFamily="@font/montserrat"
+                android:gravity="center"
+                android:maxLength="4"
+                android:padding="4dp"
+                android:text="10"
+                android:textColor="#000"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/product_item_list_price_lable"
+                app:layout_constraintStart_toEndOf="@+id/product_item_list_price_lable"
+                app:layout_constraintTop_toTopOf="@+id/product_item_list_price_lable"
+                app:layout_constraintVertical_bias="0.545" />
+
+            <TextView
+                android:id="@+id/product_price_unit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat"
+                android:gravity="center"
+                android:text="Rs"
+                android:textColor="#2E2E2E"
+                android:textSize="12sp" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/total_qty_cart_edit"
@@ -120,16 +147,18 @@
             android:fontFamily="@font/montserrat"
             android:gravity="center"
             android:maxLength="4"
+            android:layout_marginStart="3dp"
             android:padding="4dp"
             android:text="10"
             android:textColor="#000"
-            android:textSize="20sp"
+            android:textSize="14sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/total_price_cart"
-            app:layout_constraintHorizontal_bias="0.521"
-            app:layout_constraintStart_toStartOf="@+id/total_price_cart"
-            app:layout_constraintTop_toBottomOf="@+id/total_price_cart" />
+            app:layout_constraintBottom_toBottomOf="@+id/total_price_cart"
+            app:layout_constraintStart_toEndOf="@+id/total_price_cart"
+            app:layout_constraintTop_toTopOf="@+id/total_price_cart" />
+
+
+
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

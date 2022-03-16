@@ -7,6 +7,10 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -38,13 +42,11 @@ import com.switchsolutions.farmtohome.b2b.presentation.cart.ui.CartFragment
 import com.switchsolutions.farmtohome.b2b.presentation.createorder.CreateRequestFragment
 import com.switchsolutions.farmtohome.b2b.presentation.createorder.data.response.Data
 import com.switchsolutions.farmtohome.b2b.presentation.dashboard.data.response.singleorder.EditOrdersData
-import com.switchsolutions.farmtohome.b2b.presentation.dashboard.data.response.singleorder.GetSingleOrderResponseModel
 import com.switchsolutions.farmtohome.b2b.presentation.dashboard.data.response.singleorder.OrderProductsData
 import com.switchsolutions.farmtohome.b2b.presentation.dashboard.data.response.singleorder.adapter.ViewSingleOrderAdapter
 import com.switchsolutions.farmtohome.b2b.presentation.dashboard.ui.DashboardFragment
 import com.switchsolutions.farmtohome.b2b.presentation.dashboard.viewmodel.DashboardViewModel
 import com.switchsolutions.farmtohome.b2b.presentation.history.ui.OrderHistoryFragment
-import com.switchsolutions.farmtohome.b2b.presentation.history.ui.OrderHistoryItemAdapter
 import com.switchsolutions.farmtohome.b2b.presentation.history.ui.SingleHistoryOrderAdapter
 import com.switchsolutions.farmtohome.b2b.presentation.profile.ui.ProfileFragment
 import com.switchsolutions.farmtohome.b2b.roomdb.cart.CartDatabase
@@ -53,7 +55,6 @@ import com.switchsolutions.farmtohome.b2b.roomdb.cart.CartRepository
 import com.switchsolutions.farmtohome.b2b.roomdb.product.ProductDatabase
 import com.switchsolutions.farmtohome.b2b.roomdb.product.ProductEntityClass
 import com.switchsolutions.farmtohome.b2b.roomdb.product.ProductRepository
-import com.switchsolutions.farmtohome.b2b.utils.Utilities
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -69,12 +70,13 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Op
         var productImgUrl: ArrayList<String> = ArrayList()
         var productUnitArray: ArrayList<String> = ArrayList()
         var productData: List<Data> = ArrayList()
+        var previousProduct: Boolean = false
+        lateinit var cartDataList: List<CartEntityClass>
 
     }
 
-    lateinit var front_anim: AnimatorSet
-    lateinit var back_anim: AnimatorSet
-    var progressCheck = false
+    private lateinit var frontAnim: AnimatorSet
+    private lateinit var backAnim: AnimatorSet
 
 
     private lateinit var binding: ActivityMainBinding
@@ -85,18 +87,16 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Op
     private var USER_STORED_CITY_ID: Int = 0
     private var customerId: Int = 0
     private val MY_PREFS_NAME = "FarmToHomeB2B"
-    lateinit var cartDataList: List<CartEntityClass>
-    var productId: Int = 0
-    var productUnit: String = ""
-    var previousProduct: Boolean = false
+
+
     lateinit var itemToUpdate: CartEntityClass
     var quantity = 1
     private lateinit var dashboardViewModel: DashboardViewModel
-    private lateinit var singleOrderResponseData: GetSingleOrderResponseModel
     private lateinit var orderData: EditOrdersData
     private var orderProducts: ArrayList<OrderProductsData> = ArrayList()
     private lateinit var animation: Animation
     private lateinit var tvTitle: TextView
+    private var doubleBackToExitPressedOnce = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -109,7 +109,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Op
         tvTitle = binding.toolbarTitleTv
         animation = AnimationUtils.loadAnimation(applicationContext, R.anim.toolbar_title_slide)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        tvTitle.text = "Processing"
+        tvTitle.text = "Processing Orders"
         tvTitle.startAnimation(animation)
         productApiViewModel = ViewModelProvider(this)[ProductsApiViewModel::class.java]
         dashboardViewModel = ViewModelProvider(this)[DashboardViewModel::class.java]
@@ -123,9 +123,9 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Op
         badgeCount = prefs.getInt("badgeCount", 0)
         token = prefs.getString("accessToken", "").toString()
         // Now we will set the front animation
-        front_anim =
+        frontAnim =
             AnimatorInflater.loadAnimator(applicationContext, R.animator.flip_out) as AnimatorSet
-        back_anim =
+        backAnim =
             AnimatorInflater.loadAnimator(applicationContext, R.animator.flip_in) as AnimatorSet
 
         redirectToMainFragment(savedInstanceState)
@@ -144,7 +144,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Op
             when (item.itemId) {
                 R.id.item0 -> {
                     replaceFragment(DashboardFragment(), DashboardFragment.TAG)
-                    tvTitle.text = "Processing"
+                    tvTitle.text = "Processing Orders"
                     tvTitle.startAnimation(animation)
                     true
                 }
@@ -181,33 +181,6 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Op
             tvTitle.startAnimation(animation)
             binding.bottomNavigation.selectedItemId = R.id.placeholder
         }
-//        binding.bottomBar.onItemSelected = {
-//            binding.bottomBar
-//            Log.i("Bottom Navigation", "$it selected")
-//            if (it == 0) {
-////                val toneGen1 = ToneGenerator(AudioManager.STREAM_MUSIC, 100)
-////                toneGen1.startTone(ToneGenerator.TONE_CDMA_PIP, 150)
-//                replaceFragment(DashboardFragment(), DashboardFragment.TAG)
-//                title = "Processing"
-//            } else if (it == 1) {
-//                replaceFragment(DispatchFragment(), DispatchFragment.TAG)
-//                title = "Dispatch"
-//            } else if (it == 2) {
-//                Log.i("ProductIdList", customerNamesData.size.toString())
-//                replaceFragment(CreateRequestFragment(), CreateRequestFragment.TAG)
-//                title= getString(R.string.create_request)
-//
-//            } else if (it == 3) {
-//                replaceFragment(CartFragment(), CartFragment.TAG)
-//                title= "Cart"
-//            } else if (it == 4) {
-//                replaceFragment(DeliveredFragment(), DeliveredFragment.TAG)
-//                title="Delivered"
-//            }
-//        }
-//        binding.bottomBar.onItemReselected = {
-//            Log.i("Bottom Navigation", "$it Re-selected")
-//        }
     }
 
 
@@ -332,6 +305,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Op
         editOrderDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         editOrderDialog.show()
         binding.productNameProductDetailsLabel.text = data.label
+        binding.totalAmountProductDetails.text = "Price ${data.price}Rs / ${data.unit}"
         binding.totalQtyProductDetails.setText(quantity.toString())
         Glide.with(this)
             .load(data.imgUrl)
@@ -342,12 +316,29 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Op
 //            editOrderDialog.dismiss()
 //            quantity = 1
 //        }
+        binding.totalQtyProductDetails.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                if (binding.totalQtyProductDetails.text.toString().isNotEmpty()) {
+                    quantity = s.toString().toInt()
+                }
+            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (binding.totalQtyProductDetails.text.toString().isNotEmpty()) {
+                    quantity = s.toString().toInt()
+                }
+            }
+        })
         binding.addToCartButtonProductDetails.setOnClickListener {
+            Log.i("cartItemSize", cartDataList.size.toString()+"MainActivity")
             if (binding.totalQtyProductDetails.text.isEmpty() || (binding.totalQtyProductDetails.text.toString()
                     .toIntOrNull())!! <= 0
             ) {
                 Toast.makeText(this, "Quantity should not be 0", Toast.LENGTH_SHORT).show()
-            } else if (cartDataList != null && cartDataList.isNotEmpty()) {
+
+            }
+            else if (cartDataList != null && cartDataList.isNotEmpty()) {
                 for ((index) in cartDataList.withIndex()) {
                     if (data.site_product_id == cartDataList[index].site_product_id) {
                         previousProduct = true
@@ -356,7 +347,6 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Op
                             ?.plus(
                                 binding.totalQtyProductDetails.text.toString().toIntOrNull()!!
                             )).toString()
-
                         break
                     }
                 }
@@ -374,7 +364,8 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Op
                         binding.totalQtyProductDetails.text.toString(),
                         data.unit,
                         data.imgUrl ?: "",
-                        "123"
+                        "123",
+                        data.price
                     )
                     val editor =
                         this.getSharedPreferences(MY_PREFS_NAME, AppCompatActivity.MODE_PRIVATE)
@@ -394,7 +385,8 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Op
                     binding.totalQtyProductDetails.text.toString(),
                     data.unit,
                     data.imgUrl ?: "",
-                    "123"
+                    "123",
+                    data.price
                 )
                 badgeCount += 1
                 val editor =
@@ -451,11 +443,18 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Op
             }
         }
     }
-
     override fun onBackPressed() {
-        super.onBackPressed()
-        progressBar.visibility = View.GONE;
+        progressBar.visibility = View.GONE
         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        if (!doubleBackToExitPressedOnce) {
+            super.onBackPressed()
+            return
+        }
+        replaceFragment(DashboardFragment(), DashboardFragment.TAG)
+        tvTitle.text = "Processing Orders"
+        tvTitle.startAnimation(animation)
+        this.doubleBackToExitPressedOnce = false
+        Handler(Looper.getMainLooper()).postDelayed(Runnable { doubleBackToExitPressedOnce = true }, 2000)
     }
     override fun showOrderHistory(data: com.switchsolutions.farmtohome.b2b.presentation.history.data.response.Data) {
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
@@ -466,7 +465,13 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Op
         val btnCloseDialog: ImageButton = dialogLayout.findViewById(R.id.cancel_product_image_cart_view)
         val btnOk: Button = dialogLayout.findViewById(R.id.btn_ok_single_order)
         val delivDate: TextView = dialogLayout.findViewById(R.id.tv_delivery_date_edit_dialog_view)
+        val rejectedCommentsEt: TextView = dialogLayout.findViewById(R.id.et_rejected_comments)
         val recyclerView: RecyclerView = dialogLayout.findViewById(R.id.rv_edit_item_list_view)
+        val commentsLayout: LinearLayout = dialogLayout.findViewById(R.id.layout_comments)
+        if (data.status == 2){
+            commentsLayout.visibility = View.VISIBLE
+            rejectedCommentsEt.text = data.rejected_comments.toString()
+        }
         val adapter = SingleHistoryOrderAdapter(dashboardViewModel, data, data.products, View.OnClickListener {
             //showEditOrderDialog()
         })
@@ -474,7 +479,6 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Op
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
         adapter.notifyDataSetChanged()
-
         // linearLayout.setBackgroundColor(getResources().getColor(android.R.color.transparent))
         //  linearLayout.setBackgroundResource(Color.TRANSPARENT)
         myCardView.setCardBackgroundColor(Color.TRANSPARENT)
@@ -497,8 +501,6 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Op
             editOrderDialog.dismiss()
         }
     }
-
-
     fun showSingleOrderDialog(products: ArrayList<OrderProductsData>, data: EditOrdersData) {
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         val inflater: LayoutInflater =

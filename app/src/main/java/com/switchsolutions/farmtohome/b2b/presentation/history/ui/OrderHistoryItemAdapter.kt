@@ -1,11 +1,13 @@
 package com.switchsolutions.farmtohome.b2b.presentation.history.ui
 
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.switchsolutions.farmtohome.b2b.R
 import com.switchsolutions.farmtohome.b2b.presentation.dashboard.ui.DashboardFragment.Companion.singleOrder
@@ -31,9 +33,24 @@ class OrderHistoryItemAdapter(private var viewModel: OrderHistoryViewModel,
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.textViewReqID.text = listdata[position].id.toString()
         holder.tvDeliveryDate.text = listdata[position].delivery_date
         holder.tvRequestId.text = listdata[position].id.toString()
+        if (listdata[position].status == 1) {
+            holder.orderStatusTv.text = "Ready"
+            holder.orderStatusTv.setTextColor(ContextCompat.getColor(viewContext, R.color.ready_to_dispatch))
+        }
+        else if (listdata[position].status == 2) {
+            holder.orderStatusTv.text = "Rejected"
+            holder.orderStatusTv.setTextColor(ContextCompat.getColor(viewContext, R.color.rejected))
+        }
+        else if (listdata[position].status == 3) {
+            holder.orderStatusTv.text = "Dispatched"
+            holder.orderStatusTv.setTextColor(ContextCompat.getColor(viewContext, R.color.dispatched))
+        }
+        else if (listdata[position].status == 4) {
+            holder.orderStatusTv.text = "Delivered"
+            holder.orderStatusTv.setTextColor(ContextCompat.getColor(viewContext, R.color.delivered))
+        }
         holder.relativeLayout.setOnClickListener {
             singleOrder.showOrderHistory(listdata[position])
 //            Toast.makeText(
@@ -61,14 +78,14 @@ class OrderHistoryItemAdapter(private var viewModel: OrderHistoryViewModel,
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var textViewReqID: TextView
         var relativeLayout: ConstraintLayout
         var tvDeliveryDate: TextView
+        var orderStatusTv: TextView
         var tvRequestId: TextView
         init {
-            textViewReqID = itemView.findViewById<View>(R.id.tv_req_id_history) as TextView
             tvDeliveryDate = itemView.findViewById<View>(R.id.tv_delivery_date_history) as TextView
             tvRequestId = itemView.findViewById<View>(R.id.tv_request_id_history) as TextView
+            orderStatusTv = itemView.findViewById<View>(R.id.order_status_tv) as TextView
             relativeLayout = itemView.findViewById<View>(R.id.constraint_layout_history) as ConstraintLayout
 
         }

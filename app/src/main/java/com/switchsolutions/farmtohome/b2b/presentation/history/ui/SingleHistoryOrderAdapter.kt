@@ -30,6 +30,7 @@ class SingleHistoryOrderAdapter(private var viewModel: DashboardViewModel,
     RecyclerView.Adapter<SingleHistoryOrderAdapter.ViewHolder>() {
     private lateinit var viewContext: Context
     private var quantity = 0
+    private var price = false
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -37,7 +38,9 @@ class SingleHistoryOrderAdapter(private var viewModel: DashboardViewModel,
         viewContext = parent.context
         val layoutInflater = LayoutInflater.from(parent.context)
         val listItem: View = layoutInflater.inflate(R.layout.view_single_order_item_list, parent, false)
-        return ViewHolder(listItem, quantity, viewContext)
+        if (data.status == 4)
+            price = true
+        return ViewHolder(listItem, quantity, viewContext, price)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -57,18 +60,28 @@ class SingleHistoryOrderAdapter(private var viewModel: DashboardViewModel,
 
     }
 
-    class ViewHolder(itemView: View, var quantity: Int, var viewContext: Context) : RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: View, var quantity: Int, var viewContext: Context, var price: Boolean) : RecyclerView.ViewHolder(itemView) {
 
         var textViewCustomerName: TextView = itemView.findViewById<View>(R.id.product_name_edit) as TextView
         var textViewProductUnit: TextView = itemView.findViewById<View>(R.id.product_unit_and_quantity_cart2) as TextView
         var Quantity: TextView = itemView.findViewById<View>(R.id.total_qty_cart_edit) as TextView
         var iv: ImageView = itemView.findViewById<View>(R.id.iv_product_single_order) as ImageView
+        var priceLayout: LinearLayout = itemView.findViewById<View>(R.id.layout_item_list_price) as LinearLayout
+        var tvPrice: TextView = itemView.findViewById<View>(R.id.product_item_list_price) as TextView
+        var tvUnit: TextView = itemView.findViewById<View>(R.id.product_price_unit) as TextView
+        var productUnit: TextView = itemView.findViewById<View>(R.id.product_unit_and_quantity_cart2) as TextView
 
         fun bind(item: Product, position: Int){
             val requestOptions = RequestOptions().transforms(CenterCrop(), RoundedCorners(16))
             textViewCustomerName.text = item.label
             Quantity.text = item.quantity.toString()
             textViewProductUnit.text = item.unit
+            productUnit.text = item.unit
+            if (price){
+                priceLayout.visibility = View.VISIBLE
+                tvPrice.text = item.selling_price
+                tvUnit.text = "Rs/${item.unit}"
+            }
             Glide.with(viewContext)
                 .load(item.imgUrl?: "")
                 .apply(requestOptions)

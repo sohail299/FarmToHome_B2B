@@ -22,6 +22,7 @@
         // animated drawable. One of these is required.
         <item name="windowSplashScreenAnimatedIcon">@drawable/icon_launcher</item>
         <item name="windowSplashScreenAnimationDuration">200</item>
+        <item name="windowSplashScreenIconBackgroundColor">@color/white</item>
 
         // Set the theme of the Activity that directly follows your splash screen.
         <item name="postSplashScreenTheme">@style/Theme.Design.NoActionBar</item>

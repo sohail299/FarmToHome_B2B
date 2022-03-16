@@ -29,6 +29,9 @@ data class CartEntityClass(
     @ColumnInfo(name = "delivery_date")
     var deliveryDate: String,
 
+    @ColumnInfo(name = "price")
+    var price: String
+
 
 
 

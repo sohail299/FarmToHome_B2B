@@ -1,6 +1,5 @@
 package com.switchsolutions.farmtohome.b2b.presentation.history.ui
 
-import android.app.ProgressDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,22 +12,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.gson.JsonObject
-import com.switchsolutions.farmtohome.b2b.presentation.dashboard.viewmodel.DashboardViewModel
-import com.switchsolutions.farmtohome.b2b.R
 import com.switchsolutions.farmtohome.b2b.callbacks.HttpStatusCodes
-import com.switchsolutions.farmtohome.b2b.databinding.DashboardFragmentBinding
 import com.switchsolutions.farmtohome.b2b.databinding.OrderHistoryFragmentLayoutBinding
 import com.switchsolutions.farmtohome.b2b.interfaces.ShowOrderDetail
-import com.switchsolutions.farmtohome.b2b.presentation.dashboard.data.response.OrdersResponseModel
-import com.switchsolutions.farmtohome.b2b.presentation.dashboard.data.response.singleorder.EditOrdersData
-import com.switchsolutions.farmtohome.b2b.presentation.dashboard.data.response.singleorder.GetSingleOrderResponseModel
-import com.switchsolutions.farmtohome.b2b.presentation.dashboard.data.response.singleorder.OrderProductsData
 import com.switchsolutions.farmtohome.b2b.presentation.history.data.response.Data
 import com.switchsolutions.farmtohome.b2b.presentation.history.data.response.OrderHistoryResponseModel
 import com.switchsolutions.farmtohome.b2b.presentation.history.viewmodel.OrderHistoryViewModel
 import com.switchsolutions.farmtohome.b2b.utils.AnimateLayout
-import com.switchsolutions.farmtohome.b2b.utils.NotificationUtil
-import com.switchsolutions.farmtohome.b2b.utils.enums.Type
 
 
 class OrderHistoryFragment : Fragment() {
@@ -75,6 +65,10 @@ class OrderHistoryFragment : Fragment() {
         startObservers()
         viewModel.startObserver(USER_STORED_CITY_ID, USER_ID)
         // TODO: Use the ViewModel
+
+        binding.rlDashboardRefreshHistory.setOnRefreshListener {
+            binding.rlDashboardRefreshHistory.isRefreshing = false
+        }
     }
 
     fun startObservers() {
@@ -104,12 +98,6 @@ class OrderHistoryFragment : Fragment() {
                     requireContext(), "Unauthorized",
                     Toast.LENGTH_LONG
                 ).show()
-//                val builder = AlertDialog.Builder(context!!)
-//                builder.setMessage(context?.getString(R.string.invalid_credentials))
-//                        .setPositiveButton(context?.getString(R.string.ok)) { dialog, _ ->
-//                            dialog.dismiss()
-//                        }
-//                builder.create().show()
             } else {
 //                Toast.makeText(
 //                    requireContext(), "An Error Occurred",

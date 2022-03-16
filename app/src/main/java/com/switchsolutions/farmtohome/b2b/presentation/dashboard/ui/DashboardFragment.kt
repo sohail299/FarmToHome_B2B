@@ -1,6 +1,5 @@
 package com.switchsolutions.farmtohome.b2b.presentation.dashboard.ui
 
-import android.app.ProgressDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -20,34 +19,24 @@ import com.switchsolutions.farmtohome.b2b.databinding.DashboardFragmentBinding
 import com.switchsolutions.farmtohome.b2b.interfaces.ShowOrderDetail
 import com.switchsolutions.farmtohome.b2b.presentation.dashboard.data.response.Data
 import com.switchsolutions.farmtohome.b2b.presentation.dashboard.data.response.OrdersResponseModel
-import com.switchsolutions.farmtohome.b2b.presentation.dashboard.data.response.singleorder.EditOrdersData
-import com.switchsolutions.farmtohome.b2b.presentation.dashboard.data.response.singleorder.GetSingleOrderResponseModel
-import com.switchsolutions.farmtohome.b2b.presentation.dashboard.data.response.singleorder.OrderProductsData
 import com.switchsolutions.farmtohome.b2b.utils.AnimateLayout
 import com.switchsolutions.farmtohome.b2b.utils.NotificationUtil
 import com.switchsolutions.farmtohome.b2b.utils.enums.Type
 
-
 class DashboardFragment : Fragment() {
-
     companion object {
         const val TAG: String = "dispatchedFragment"
         var USER_STORED_CITY_ID = 1
-        var requisitionId = 0
         val dispatchedOrdersJson = JsonObject()
         var USER_ID = 1
-        fun newInstance() = DashboardFragment()
         lateinit var singleOrder : ShowOrderDetail
     }
-
     private lateinit var viewModel: DashboardViewModel
     lateinit var binding: DashboardFragmentBinding
     private lateinit var progressBar: ProgressBar
     private val MY_PREFS_NAME = "FarmToHomeB2B"
     private lateinit var ordersResponseModel: OrdersResponseModel
     private lateinit var listData: List<Data>
-
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,7 +48,6 @@ class DashboardFragment : Fragment() {
         binding = DashboardFragmentBinding.inflate(layoutInflater)
         return binding.root
     }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this)[DashboardViewModel::class.java]
@@ -81,11 +69,12 @@ class DashboardFragment : Fragment() {
         }
         startObservers()
         viewModel.startObserver(USER_STORED_CITY_ID, USER_ID)
-        // TODO: Use the ViewModel
+        binding.rlDashboardRefresh.setOnRefreshListener {
+            binding.rlDashboardRefresh.isRefreshing = false
+        }
     }
 
     fun startObservers() {
-
         viewModel.callSignInApi.observe(viewLifecycleOwner, Observer {
             if (it!!) {
                 progressBar.visibility = View.VISIBLE
@@ -112,18 +101,8 @@ class DashboardFragment : Fragment() {
                     requireContext(), "Unauthorized",
                     Toast.LENGTH_LONG
                 ).show()
-//                val builder = AlertDialog.Builder(context!!)
-//                builder.setMessage(context?.getString(R.string.invalid_credentials))
-//                        .setPositiveButton(context?.getString(R.string.ok)) { dialog, _ ->
-//                            dialog.dismiss()
-//                        }
-//                builder.create().show()
             } else {
-//                Toast.makeText(
-//                    requireContext(), "An Error Occurred",
-//                    Toast.LENGTH_LONG
-//                ).show()
-                NotificationUtil.showShortToast(requireContext(), requireContext().getString(R.string.error_occurred), Type.DANGER)
+                NotificationUtil.showShortToast(requireContext(), it.message, Type.DANGER)
             }
         })
 

@@ -30,7 +30,6 @@ class DashboardItemAdapter(private var viewModel: DashboardViewModel,
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.textViewCustomerName.text = listdata[position].id.toString()
         holder.tvDeliveryDate.text = listdata[position].delivery_date
         holder.tvRequestId.text = listdata[position].id.toString()
         holder.relativeLayout.setOnClickListener {
@@ -61,12 +60,10 @@ class DashboardItemAdapter(private var viewModel: DashboardViewModel,
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var textViewCustomerName: TextView
         var relativeLayout: ConstraintLayout
         var tvDeliveryDate: TextView
         var tvRequestId: TextView
         init {
-            textViewCustomerName = itemView.findViewById<View>(R.id.tv_customer_name) as TextView
             tvDeliveryDate = itemView.findViewById<View>(R.id.tv_delivery_date) as TextView
             tvRequestId = itemView.findViewById<View>(R.id.tv_request_id) as TextView
             relativeLayout = itemView.findViewById<View>(R.id.constraint_layout) as ConstraintLayout

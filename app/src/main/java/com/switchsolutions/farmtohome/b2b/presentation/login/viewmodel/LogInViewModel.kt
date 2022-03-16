@@ -46,7 +46,9 @@ class LogInViewModel : ViewModel() {
     var callSignInApi: MutableLiveData<Boolean> = MutableLiveData()
     var callResetPassApi: MutableLiveData<Boolean> = MutableLiveData()
 
-
+    private val otpTextError = MutableLiveData<Event<Boolean>>()
+    val statusOtpTextError: MutableLiveData<Event<Boolean>>
+        get() = otpTextError
 
     private val apiSignInSuccess = MutableLiveData<Event<LoginResponse>>()
     val statusSignInSuccess: MutableLiveData<Event<LoginResponse>>
@@ -71,6 +73,10 @@ class LogInViewModel : ViewModel() {
     private val apiFailure = MutableLiveData<Event<ErrorDto>>()
     val statusFailure: MutableLiveData<Event<ErrorDto>>
         get() = apiFailure
+
+    private val apiOTPFailure = MutableLiveData<Event<ErrorDto>>()
+    val statusOTPFailure: MutableLiveData<Event<ErrorDto>>
+        get() = apiOTPFailure
 
     init {
         loginRequestModel.value = if (BuildConfig.DEBUG) LoginRequestModel("", "","",",","","")
@@ -151,21 +157,27 @@ class LogInViewModel : ViewModel() {
         otpRequestModel.value?.otp6 = otpRequestModel.value?.otp6?.trim() ?: ""
         loginRequestModel.value?.msisdn = loginRequestModel.value?.msisdn?.trim() ?: ""
             if (otpRequestModel.value?.otp1.toString().isEmpty()) {
+                otpTextError.value = Event(true)
 //                otp1.setError("Add OTP Number")
 //                otp1.requestFocus()
             } else if (otpRequestModel.value?.otp2.toString().isEmpty()) {
+                otpTextError.value = Event(true)
 //                otp2.setError("Add OTP Number")
 //                otp2.requestFocus()
             } else if (otpRequestModel.value?.otp3.toString().isEmpty()) {
+                otpTextError.value = Event(true)
 //                otp3.setError("Add OTP Number")
 //                otp3.requestFocus()
             } else if (otpRequestModel.value?.otp4.toString().isEmpty()) {
+                otpTextError.value = Event(true)
 //                otp4.setError("Add OTP Number")
 //                otp4.requestFocus()
             } else if (otpRequestModel.value?.otp5.toString().isEmpty()) {
+                otpTextError.value = Event(true)
 //                otp5.setError("Add OTP Number")
 //                otp5.requestFocus()
             } else if (otpRequestModel.value?.otp6.toString().isEmpty()) {
+                otpTextError.value = Event(true)
 //                otp6.setError("Add OTP Number")
 //                otp6.requestFocus()
             } else {
@@ -254,7 +266,7 @@ class LogInViewModel : ViewModel() {
 
             override fun onFailure(t: ErrorDto) {
                 callSignInApi.value = false
-                statusFailure.value = Event(t)
+                apiOTPFailure.value = Event(t)
             }
 
             override fun tokenRefreshed() {

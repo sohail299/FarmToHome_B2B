@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.switchsolutions.farmtohome.b2b.*
+import com.switchsolutions.farmtohome.b2b.data.viewmodel.ProductsApiViewModel
 import com.switchsolutions.farmtohome.b2b.databinding.CreateRequestFragmentBinding
 import com.switchsolutions.farmtohome.b2b.interfaces.CartBadge
 import com.switchsolutions.farmtohome.b2b.interfaces.OpenProductDetail
@@ -21,6 +22,9 @@ import com.switchsolutions.farmtohome.b2b.presentation.createorder.data.response
 import com.switchsolutions.farmtohome.b2b.roomdb.cart.CartDatabase
 import com.switchsolutions.farmtohome.b2b.roomdb.cart.CartEntityClass
 import com.switchsolutions.farmtohome.b2b.roomdb.cart.CartRepository
+import com.switchsolutions.farmtohome.b2b.roomdb.product.ProductDatabase
+import com.switchsolutions.farmtohome.b2b.roomdb.product.ProductEntityClass
+import com.switchsolutions.farmtohome.b2b.roomdb.product.ProductRepository
 import java.util.*
 
 class CreateRequestFragment : Fragment() {
@@ -29,10 +33,10 @@ class CreateRequestFragment : Fragment() {
         fun newInstance() = CreateRequestFragment()
         var item: ArrayList<String>? = ArrayList()
         lateinit var binding : CreateRequestFragmentBinding
-        lateinit var cartDataList: List<CartEntityClass>
         var productDataCopy: ArrayList<Data> = ArrayList()
         var productData: ArrayList<Data> = ArrayList()
         lateinit var productDetails : OpenProductDetail
+        private lateinit var productApiViewModel: ProductsApiViewModel
        //  var customerNamesData: ArrayList<String> = ArrayList()
 
     }
@@ -61,9 +65,7 @@ class CreateRequestFragment : Fragment() {
         deliveryDate = prefs.getString("customerDeliveryDate", "" ).toString()
         badgeCount = prefs.getInt("badgeCount", 0)
         createB2BRequestModel = CreateB2BRequestModel( null, "", null)
-        binding.llDeliveryDate.setOnClickListener {
-        //datePick()
-        }
+
         return binding.root
     }
 
@@ -74,11 +76,17 @@ class CreateRequestFragment : Fragment() {
         val factory = CartViewModelFactory(repository)
         cartVM = ViewModelProvider(this, factory)[CartViewModel::class.java]
         productDetails = activity as OpenProductDetail
+        productApiViewModel = ViewModelProvider(this)[ProductsApiViewModel::class.java]
+
+        binding.layoutRefreshProducts.setOnRefreshListener {
+
+        }
+
         productData.clear()
         productDataCopy.clear()
         productDataCopy.addAll(MainActivity.productData)
         productData.addAll(MainActivity.productData)
-        val adapter = ProductListAdapter( productData, productDataCopy, View.OnClickListener {
+        val adapter = ProductListAdapter(productData, productDataCopy, View.OnClickListener {
             // showEditOrderDialog()
         })
         binding.recyclerviewListProducts.setHasFixedSize(true)
@@ -96,6 +104,21 @@ class CreateRequestFragment : Fragment() {
                 return true
             }
         })
+        productApiViewModel.statusProductResponseSuccess.observe(viewLifecycleOwner) { it ->
+            it.getContentIfNotHandled()?.let {
+                if (it.data.isNotEmpty()) {
+                    productData.clear()
+                    productData.addAll(it.data)
+                    productDataCopy.clear()
+                    productDataCopy.addAll(productData)
+                    adapter.notifyDataSetChanged()
+                    updateAutofillProducts() // Save products response to local database
+                    //getProductsNames() // Get products data from local database
+                } else {
+                    productData = ArrayList()
+                }
+            }
+        }
         cartVM.cartStatus.observe(viewLifecycleOwner, Observer {
             if (it!!)
             {
@@ -107,20 +130,40 @@ class CreateRequestFragment : Fragment() {
                 cb.cartBadge(badgeCount)
             }
         })
-        getCartItems()
+       // getCartItems()
 
     }
-
-
-    private fun getCartItems() {
-        cartVM.getSavedProducts().observe(viewLifecycleOwner, Observer {
-            if (it.isNotEmpty()) {
-                cartDataList= it
-            }
-            else
-                cartDataList = ArrayList()
-        })
+    private fun updateAutofillProducts() {
+        val daoProduct = ProductDatabase.getInstance(requireContext()).productDao
+        val repositoryProduct = ProductRepository(daoProduct)
+        val factoryProduct = ProductViewModelFactory(repositoryProduct)
+        productVM = ViewModelProvider(this, factoryProduct)[ProductViewModel::class.java]
+        if (productData.isNotEmpty()) {
+            productVM.clearAll()
+        }
+        //saving products data from api response to ROOM database for later use
+        for (element in productData) {
+            productVM.insertProduct(
+                ProductEntityClass(
+                    0,
+                    (element.imgUrl) ?: "",
+                    element.label,
+                    element.site_product_id,
+                    element.unit
+                )
+            )
+        }
     }
+
+//    private fun getCartItems() {
+//        cartVM.getSavedProducts().observe(viewLifecycleOwner, Observer {
+//            if (it.isNotEmpty()) {
+//                cartDataList= it
+//            }
+//            else
+//                cartDataList = ArrayList()
+//        })
+//    }
 
 
 

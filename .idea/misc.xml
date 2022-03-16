@@ -9,13 +9,18 @@
         <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/drawable/cart_new_icon.xml" value="0.23" />
         <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/drawable/close_black_icon.xml" value="0.144" />
         <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/drawable/color_accesnt_rounded_background.xml" value="0.2595" />
+        <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/drawable/delivered_background_round.xml" value="0.2595" />
+        <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/drawable/dispatched_rounded_background.xml" value="0.2595" />
         <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/drawable/flip_out.xml" value="0.1" />
         <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/drawable/ic_password_icon.xml" value="0.1" />
+        <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/drawable/icon_launcher.xml" value="0.245" />
         <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/drawable/logout_button_background.xml" value="0.18" />
         <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/drawable/password_hide_icon.xml" value="0.1285" />
         <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/drawable/password_show_icon.xml" value="0.1235" />
         <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/drawable/product_details_background.xml" value="0.23" />
         <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/drawable/profile_edittext_bg.xml" value="0.155" />
+        <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/drawable/ready_to_dispatch_background_round.xml" value="0.2595" />
+        <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/drawable/rejected_background_round.xml" value="0.2595" />
         <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/drawable/remarks_background_edit_text.xml" value="0.144" />
         <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/drawable/rounded_corner_red.xml" value="0.2145" />
         <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/drawable/rounded_corners_green.xml" value="0.2145" />
@@ -32,16 +37,16 @@
         <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/layout-w1240dp/content_custom_toast.xml" value="0.1" />
         <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/layout-w1240dp/fragment_profile_new.xml" value="0.39609375" />
         <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/layout/activity_login.xml" value="0.11481481481481481" />
-        <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/layout/activity_login_new.xml" value="0.2" />
+        <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/layout/activity_login_new.xml" value="0.264" />
         <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/layout/activity_main.xml" value="0.264" />
         <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/layout/cart_fragment.xml" value="0.24149108589951376" />
         <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/layout/cart_item_list_adapter.xml" value="0.4" />
         <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/layout/content_custome_toast.xml" value="0.11625" />
-        <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/layout/create_request_fragment.xml" value="0.264" />
+        <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/layout/create_request_fragment.xml" value="0.2" />
         <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/layout/custom_edit_product_dialog.xml" value="0.10936051899907322" />
         <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/layout/custom_single_product_dialog.xml" value="0.264" />
         <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/layout/dashboard_fragment.xml" value="0.20863616930312098" />
-        <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/layout/dashboard_list_items.xml" value="0.536" />
+        <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/layout/dashboard_list_items.xml" value="0.4" />
         <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/layout/dialog_custom_cart_submission.xml" value="0.264" />
         <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/layout/dispatched_list_items.xml" value="0.10517315091919624" />
         <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/layout/fragment_profile_layout.xml" value="0.264" />
@@ -51,8 +56,9 @@
         <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/layout/order_history_item_list_adapter.xml" value="0.4" />
         <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/layout/product_detail_dialog.xml" value="0.30730478589420657" />
         <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/layout/product_list_items.xml" value="0.4" />
-        <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/layout/view_single_order_item_list.xml" value="0.526595744680851" />
+        <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/layout/view_single_order_item_list.xml" value="0.46438746438746437" />
         <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/menu/bottom_nav_menu.xml" value="0.1" />
+        <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.245" />
         <entry key="..\:/Users/BKK/AndroidStudioProjects/FarmtoHomeB2B/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.1215" />
       </map>
     </option>

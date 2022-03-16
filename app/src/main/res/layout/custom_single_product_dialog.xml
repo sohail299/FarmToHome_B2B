@@ -3,6 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
         <androidx.cardview.widget.CardView
             android:id="@+id/cv_view_order"
             android:layout_width="match_parent"
@@ -107,6 +110,48 @@
                             android:background="@color/white" />
 
                 </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/layout_comments"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Rejection Comments"
+                    android:textStyle="bold"
+                    android:textColor="@color/grey"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/montserrat"
+                    android:layout_marginStart="15dp"/>
+
+
+                <EditText
+                    android:id="@+id/et_rejected_comments"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginStart="15dp"
+                    android:padding="5dp"
+                    android:inputType="text|textMultiLine|textCapSentences"
+                    android:gravity="top"
+                    android:maxLength="500"
+                    android:enabled="false"
+                    android:layout_marginEnd="15dp"
+                    android:textColor="@color/grey"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:textColorHint="@color/light_grey"
+                    android:ems="10"
+                    android:textSize="14sp"
+                    android:maxLines="8"
+                    android:singleLine="true"
+                    android:fontFamily="@font/montserrat"
+                    android:background="@drawable/remarks_background_edit_text"
+                    android:layout_marginBottom="10dp"
+                    android:hint="Max 500 characters"/>
+                </LinearLayout>
                 <Button
                     android:id="@+id/btn_ok_single_order"
                     android:layout_width="match_parent"
@@ -125,4 +170,5 @@
                     android:textColor="@color/white"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
+    </androidx.core.widget.NestedScrollView>
 </layout>

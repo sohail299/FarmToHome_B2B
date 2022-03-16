@@ -72,15 +72,27 @@
             app:layout_constraintVertical_bias="0.0" />
 
         <TextView
-            android:id="@+id/product_price"
+            android:id="@+id/product_price_create_order"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:fontFamily="@font/montserrat"
-            android:text="90 Rs/kg"
+            android:text="90 Rs"
             android:textColor="@color/grey"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView"
+            app:layout_constraintTop_toBottomOf="@+id/tv_product_name"
+            app:layout_constraintVertical_bias="0.083" />
+
+        <TextView
+            android:id="@+id/product_unit_create_order"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat"
+            android:text="/kg"
+            android:textColor="@color/grey"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/product_price_create_order"
             app:layout_constraintTop_toBottomOf="@+id/tv_product_name"
             app:layout_constraintVertical_bias="0.083" />
 

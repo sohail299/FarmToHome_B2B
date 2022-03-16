@@ -26,6 +26,9 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.switchsolutions.farmtohome.b2b.CartViewModel
 import com.switchsolutions.farmtohome.b2b.CartViewModelFactory
+import com.switchsolutions.farmtohome.b2b.MainActivity
+import com.switchsolutions.farmtohome.b2b.MainActivity.Companion.badgeCount
+import com.switchsolutions.farmtohome.b2b.MainActivity.Companion.cartDataList
 import com.switchsolutions.farmtohome.b2b.R
 import com.switchsolutions.farmtohome.b2b.callbacks.HttpStatusCodes
 import com.switchsolutions.farmtohome.b2b.databinding.CartFragmentBinding
@@ -54,7 +57,6 @@ class CartFragment : Fragment() {
     private lateinit var cartViewModel: CartViewModel
     private lateinit var adapter: MyCartRecyclerViewAdapter
     lateinit var binding: CartFragmentBinding
-    lateinit var cartDataList: List<CartEntityClass>
     lateinit var cartDataListCheck: List<CartEntityClass>
     lateinit var product: CartEntityClass
 
@@ -62,7 +64,6 @@ class CartFragment : Fragment() {
     private lateinit var waitDialog: ProgressDialog
     private lateinit var submissionDataResponse: OrderSubmissionResponseModel
     var cityId: Int = 0
-    var badgeCount: Int = 0
     private val MY_PREFS_NAME = "FarmToHomeB2B"
     var deliveryDate: String = ""
     var customerId: Int = 0
@@ -75,7 +76,6 @@ class CartFragment : Fragment() {
         val prefs = requireContext().getSharedPreferences(MY_PREFS_NAME, AppCompatActivity.MODE_PRIVATE)
         cityId = prefs.getInt("cityId", 1)
         customerId = prefs.getInt("User", 0)
-        badgeCount = prefs.getInt("badgeCount", 0)
         deliveryDate = prefs.getString("customerDeliveryDate", "dd-mm-yyyy").toString() //0 is the default value.
         binding = CartFragmentBinding.inflate(layoutInflater)
         return binding.root
@@ -132,7 +132,7 @@ class CartFragment : Fragment() {
                         for ((index) in cartDataList.withIndex()) {
                             product = cartDataList[index]
                             val productObject = JsonObject()
-                            productObject.addProperty("site_product_id", cartDataList[index].id)
+                            productObject.addProperty("site_product_id", cartDataList[index].site_product_id)
                             productObject.addProperty("quantity", productQuantity[index].toInt())
                             Log.i("ProductQuantity", product.quantity)
                             productObject.addProperty("is_removed", 0)
@@ -202,13 +202,15 @@ class CartFragment : Fragment() {
         binding.cvCartCustomerDetails.visibility = View.GONE
         binding.llCustomerRemarks.visibility = View.GONE
         val editor = requireContext().getSharedPreferences(MY_PREFS_NAME, AppCompatActivity.MODE_PRIVATE).edit()
-        editor.putInt("badgeCount", 0)
+        badgeCount = 0
+        editor.putInt("badgeCount", badgeCount)
         editor.putInt("customerId", 0) //0 is the default value.
         editor.putString("customerName", "")//"" is the default value.
         editor.putString("customerDeliveryDate", "" )
         editor.apply()
         val cb : CartBadge = activity as CartBadge
         cb.cartBadge(0)
+        getCartItems()
     }
 
     fun initRecyclerView() {
@@ -258,18 +260,35 @@ class CartFragment : Fragment() {
     }
 
     private fun listItemClicked(product: CartEntityClass) {
-        Log.i("cartItemSize", cartDataList.size.toString())
-        if (cartDataList.isNotEmpty()) {
+       // Log.i("cartItemSize", cartDataList.size.toString()+" before")
+        if (cartDataList.isNotEmpty() && cartDataList.size>1) {
             cartViewModel.deleteProduct(product)
             badgeCount -= 1
-            val editor =
-                requireContext().getSharedPreferences(MY_PREFS_NAME, AppCompatActivity.MODE_PRIVATE)
+            val editor = requireContext().getSharedPreferences(MY_PREFS_NAME, AppCompatActivity.MODE_PRIVATE)
                     .edit()
             editor.putInt("badgeCount", badgeCount)
             editor.apply()
             val cb: CartBadge = activity as CartBadge
             cb.cartBadge(badgeCount)
+          //  Log.i("cartItemSize", cartDataList.size.toString()+" after")
+//            if (badgeCount<1)
+//                MainActivity.previousProduct = false
         }
+        if (cartDataList.isNotEmpty() && cartDataList.size == 1){
+            cartViewModel.clearAll()
+            getCartItems()
+            val editor = requireContext().getSharedPreferences(MY_PREFS_NAME, AppCompatActivity.MODE_PRIVATE).edit()
+            badgeCount = 0
+            editor.putInt("badgeCount", badgeCount)
+            editor.apply()
+            val cb: CartBadge = activity as CartBadge
+            cb.cartBadge(badgeCount)
+        }
+    }
+    private fun getCartItems() {
+        cartViewModel.getSavedProducts().observe(viewLifecycleOwner, Observer {
+            cartDataList = it.ifEmpty { ArrayList() }
+        })
     }
     fun datePick() {
         //function to show the date picker

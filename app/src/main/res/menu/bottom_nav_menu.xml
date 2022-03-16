@@ -13,7 +13,7 @@
 
     <item
         android:id="@+id/placeholder"
-        android:title="" />
+        android:title="Create" />
 
     <item
         android:id="@+id/item3"

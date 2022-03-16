@@ -35,7 +35,7 @@ class CartViewModel(private val repository: CartRepository) : ViewModel() {
             updateCartProduct(entityClass)
     }
 
-    fun saveOrUpdate(productName: String,productId: Int,  quantity: String, unit: String, imgUrl: String,  deliveryDate: String) {
+    fun saveOrUpdate(productName: String,productId: Int,  quantity: String, unit: String, imgUrl: String,  deliveryDate: String, price: String) {
         if (productName.isEmpty()) {
             statusMessage.value = Event("Please enter product's name")
         } else if (quantity.isEmpty()) {
@@ -43,7 +43,7 @@ class CartViewModel(private val repository: CartRepository) : ViewModel() {
         }
         else {
             cartStatus.value = true
-            insertProduct(CartEntityClass(0,imgUrl, productName,productId, quantity,unit, deliveryDate))
+            insertProduct(CartEntityClass(0,imgUrl, productName,productId, quantity,unit, deliveryDate, price))
         }
     }
 

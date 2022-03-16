@@ -50,6 +50,8 @@ class MyViewHolder( val binding: CartItemListAdapterBinding, var quantity: Int, 
         var requestOptions = RequestOptions()
         requestOptions = requestOptions.transforms(CenterCrop(), RoundedCorners(16))
         binding.productNameCart.text = product.label
+        if (product.price.isNotEmpty())
+        binding.productPriceTvCart.text = (product.quantity.toInt()*product.price.toInt()).toString() + " Rs"
         Glide.with(context)
             .load(product.imgUrl)
             .apply(requestOptions)
@@ -65,16 +67,24 @@ class MyViewHolder( val binding: CartItemListAdapterBinding, var quantity: Int, 
         binding.totalQtyCart.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 if (binding.totalQtyCart.text.toString().isNotEmpty()) {
-                    CartFragment.productQuantity[position] = s.toString()
-                    product.quantity = s.toString()
+                    if (CartFragment.productQuantity.size > position) {
+                        CartFragment.productQuantity[position] = s.toString()
+                        product.quantity = s.toString()
+                        if (product.price.isNotEmpty())
+                        binding.productPriceTvCart.text = (product.quantity.toInt()*product.price.toInt()).toString() + " Rs"
+                    }
                 }
             }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (binding.totalQtyCart.text.toString().isNotEmpty()) {
-                    CartFragment.productQuantity[position] = s.toString()
-                    product.quantity = s.toString()
+                    if (CartFragment.productQuantity.size > position) {
+                        CartFragment.productQuantity[position] = s.toString()
+                        product.quantity = s.toString()
+                        if (product.price.isNotEmpty())
+                        binding.productPriceTvCart.text = (product.quantity.toInt()*product.price.toInt()).toString() + " Rs"
+                    }
 
                 }
             }

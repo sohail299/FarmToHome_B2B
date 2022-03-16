@@ -48,7 +48,7 @@
                 android:id="@+id/product_unit_and_quantity_cart"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="104dp"
+                android:layout_marginStart="80dp"
                 android:layout_marginTop="8dp"
                 android:fontFamily="@font/montserrat"
                 android:text="Unit"
@@ -62,12 +62,12 @@
                 android:id="@+id/view_divider"
                 android:layout_width="3dp"
                 android:layout_height="30dp"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="12dp"
                 android:background="@color/background_grey"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/product_unit_and_quantity_cart"
                 app:layout_constraintTop_toBottomOf="@+id/product_name_cart"
-                app:layout_constraintVertical_bias="0.558" />
+                app:layout_constraintVertical_bias="0.567" />
 
             <TextView
                 android:id="@+id/product_unit_and_quantity_cart2"
@@ -102,7 +102,7 @@
                 android:id="@+id/view_divider2"
                 android:layout_width="3dp"
                 android:layout_height="30dp"
-                android:layout_marginStart="44dp"
+                android:layout_marginStart="36dp"
                 android:layout_marginBottom="16dp"
                 android:background="@color/background_grey"
                 app:layout_constraintBottom_toBottomOf="@+id/view_divider"
@@ -118,7 +118,7 @@
                 android:fontFamily="@font/montserrat"
                 android:foregroundGravity="center_horizontal"
                 android:gravity="center"
-                android:text="100 Rs"
+                android:text="0 Rs"
                 android:textColor="#2E2E2E"
                 android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -180,7 +180,7 @@
 
             <EditText
                 android:id="@+id/total_qty_cart"
-                android:layout_width="40dp"
+                android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:fontFamily="@font/montserrat"
@@ -188,7 +188,7 @@
                 android:padding="8dp"
                 android:maxLength="4"
                 android:text="10"
-                android:inputType="number"
+                android:inputType="numberSigned"
                 android:textColor="#000"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="@+id/product_qty_minus_cart"

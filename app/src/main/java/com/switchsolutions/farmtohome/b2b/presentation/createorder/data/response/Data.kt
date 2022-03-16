@@ -4,5 +4,6 @@ data class Data(
     val imgUrl: String,
     val label: String,
     val site_product_id: Int,
-    val unit: String
+    val unit: String,
+    val price: String
 )
