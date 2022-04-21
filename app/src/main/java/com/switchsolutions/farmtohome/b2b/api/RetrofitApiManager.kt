@@ -57,6 +57,7 @@ abstract class RetrofitApiManager<T>(context: Context) : Callback<T>, IOnTokenRe
             }else{
                 try {
                     responseFailure(Gson().fromJson(response.errorBody()?.string()!!, ErrorDto::class.java))
+                    //NotificationUtil.showShortToast(mContext, response.errorBody()?.string()!!, Type.DANGER)
                 } catch (e: Exception) {
                     Timber.e(e)
                     responseFailure(ErrorDto(mContext.getString(R.string.error_occurred), 0))

@@ -1,6 +1,7 @@
 package com.switchsolutions.farmtohome.b2b.presentation.cart.viewmodel
 
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.gson.Gson
@@ -20,8 +21,11 @@ class SubmitCartViewModel : ViewModel() {
     var apiResponseSuccess: MutableLiveData<OrderSubmissionResponseModel> = MutableLiveData()
     var apiResponseFailure: MutableLiveData<ErrorDto> = MutableLiveData()
 
+
+
     init {
         callCartSubmitApi.value = false
+
     }
 
 

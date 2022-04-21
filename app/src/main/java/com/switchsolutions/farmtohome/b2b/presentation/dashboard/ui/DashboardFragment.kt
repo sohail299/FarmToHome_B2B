@@ -70,13 +70,14 @@ class DashboardFragment : Fragment() {
         startObservers()
         viewModel.startObserver(USER_STORED_CITY_ID, USER_ID)
         binding.rlDashboardRefresh.setOnRefreshListener {
-            binding.rlDashboardRefresh.isRefreshing = false
+            viewModel.startObserver(USER_STORED_CITY_ID, USER_ID)
         }
     }
 
     fun startObservers() {
         viewModel.callSignInApi.observe(viewLifecycleOwner, Observer {
             if (it!!) {
+                if (!binding.rlDashboardRefresh.isRefreshing)
                 progressBar.visibility = View.VISIBLE
             }
         })
@@ -84,6 +85,7 @@ class DashboardFragment : Fragment() {
             if (progressBar.isVisible) progressBar.visibility = View.GONE
             ordersResponseModel = it
             listData = ordersResponseModel.data
+            binding.rlDashboardRefresh.isRefreshing = false
 //            val adapter = DashboardAdapter(orders, View.OnClickListener(){
 //            })
             val adapter = DashboardItemAdapter(viewModel, listData, View.OnClickListener {
@@ -96,6 +98,7 @@ class DashboardFragment : Fragment() {
         })
         viewModel.apiResponseFailure.observe(viewLifecycleOwner, Observer {
             if (progressBar.isVisible) progressBar.visibility = View.GONE
+            binding.rlDashboardRefresh.isRefreshing = false
             if ((it?.statusCode == HttpStatusCodes.SC_UNAUTHORIZED) || (it?.statusCode == HttpStatusCodes.SC_NO_CONTENT)) {
                 Toast.makeText(
                     requireContext(), "Unauthorized",

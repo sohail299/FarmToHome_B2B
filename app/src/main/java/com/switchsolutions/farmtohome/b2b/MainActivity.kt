@@ -72,6 +72,8 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Op
         var productData: List<Data> = ArrayList()
         var previousProduct: Boolean = false
         lateinit var cartDataList: List<CartEntityClass>
+        var USER_STORED_CITY_ID: Int = 0
+        var customerId: Int = 0
 
     }
 
@@ -84,13 +86,14 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Op
     private lateinit var productApiViewModel: ProductsApiViewModel
     private lateinit var productVM: ProductViewModel
     private lateinit var cartVM: CartViewModel
-    private var USER_STORED_CITY_ID: Int = 0
+
     private var customerId: Int = 0
     private val MY_PREFS_NAME = "FarmToHomeB2B"
 
 
     lateinit var itemToUpdate: CartEntityClass
     var quantity = 1
+    var total = 0
     private lateinit var dashboardViewModel: DashboardViewModel
     private lateinit var orderData: EditOrdersData
     private var orderProducts: ArrayList<OrderProductsData> = ArrayList()
@@ -305,7 +308,9 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Op
         editOrderDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         editOrderDialog.show()
         binding.productNameProductDetailsLabel.text = data.label
-        binding.totalAmountProductDetails.text = "Price ${data.price}Rs / ${data.unit}"
+        binding.productPriceProductDetails.text = "PKR ${data.price} / ${data.unit}"
+        binding.totalAmountProductDetails.text = "PKR: ${data.price}"
+
         binding.totalQtyProductDetails.setText(quantity.toString())
         Glide.with(this)
             .load(data.imgUrl)
@@ -327,6 +332,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Op
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (binding.totalQtyProductDetails.text.toString().isNotEmpty()) {
                     quantity = s.toString().toInt()
+                    binding.totalAmountProductDetails.text = "PKR: ${data.price.toInt()*quantity}"
                 }
             }
         })
@@ -409,6 +415,8 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Op
                 quantity = quantity.minus(1)
                 binding.totalQtyProductDetails.setText(quantity.toString())
             }
+            else
+                Toast.makeText(this, "Quantity should not be less than 1", Toast.LENGTH_SHORT).show()
         }
 
         editOrderDialog.setOnDismissListener {
@@ -464,7 +472,8 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Op
         val myCardView: CardView = dialogLayout.findViewById(R.id.cv_view_order)
         val btnCloseDialog: ImageButton = dialogLayout.findViewById(R.id.cancel_product_image_cart_view)
         val btnOk: Button = dialogLayout.findViewById(R.id.btn_ok_single_order)
-        val delivDate: TextView = dialogLayout.findViewById(R.id.tv_delivery_date_edit_dialog_view)
+        val delivDate: TextView = dialogLayout.findViewById(R.id.single_order_delivery_date)
+        val grandTotalLayout: LinearLayout = dialogLayout.findViewById(R.id.ll_grand_total)
         val rejectedCommentsEt: TextView = dialogLayout.findViewById(R.id.et_rejected_comments)
         val recyclerView: RecyclerView = dialogLayout.findViewById(R.id.rv_edit_item_list_view)
         val commentsLayout: LinearLayout = dialogLayout.findViewById(R.id.layout_comments)
@@ -475,6 +484,8 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Op
         val adapter = SingleHistoryOrderAdapter(dashboardViewModel, data, data.products, View.OnClickListener {
             //showEditOrderDialog()
         })
+        grandTotalLayout.visibility = View.GONE
+
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
@@ -508,9 +519,9 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Op
         val dialogLayout: View = inflater.inflate(R.layout.custom_single_product_dialog, null)
         val myCardView: CardView = dialogLayout.findViewById(R.id.cv_view_order)
         val btnOk: Button = dialogLayout.findViewById(R.id.btn_ok_single_order)
-        val btnCloseDialog: ImageButton =
-            dialogLayout.findViewById(R.id.cancel_product_image_cart_view)
-        val delivDate: TextView = dialogLayout.findViewById(R.id.tv_delivery_date_edit_dialog_view)
+        val btnCloseDialog: ImageButton = dialogLayout.findViewById(R.id.cancel_product_image_cart_view)
+        val delivDate: TextView = dialogLayout.findViewById(R.id.single_order_delivery_date)
+        val total: TextView = dialogLayout.findViewById(R.id.single_order_total_amount)
         val recyclerView: RecyclerView = dialogLayout.findViewById(R.id.rv_edit_item_list_view)
         val adapter = ViewSingleOrderAdapter(dashboardViewModel, products, View.OnClickListener {
             //showEditOrderDialog()
@@ -519,6 +530,11 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Op
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
         adapter.notifyDataSetChanged()
+        var grandTotal = 0
+        for ((index) in products.withIndex()){
+            grandTotal += ((products[index].selling_price_b2b)!!.toInt() * ((products[index].quantity))!!.toInt())
+        }
+        total.text = grandTotal.toString() + " Rs"
 
         // linearLayout.setBackgroundColor(getResources().getColor(android.R.color.transparent))
         //  linearLayout.setBackgroundResource(Color.TRANSPARENT)

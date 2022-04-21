@@ -1,5 +1,4 @@
-package com.switchsolutions.farmtohome.b2b.presentation.dashboard.data.response.singleorder.adapter
-
+package com.switchsolutions.farmtohome.b2b.presentation.cart.ui
 
 import android.content.Context
 import android.util.Log
@@ -18,62 +17,65 @@ import com.switchsolutions.farmtohome.b2b.R
 import com.switchsolutions.farmtohome.b2b.presentation.dashboard.data.response.singleorder.OrderProductsData
 import com.switchsolutions.farmtohome.b2b.presentation.dashboard.ui.DashboardFragment
 import com.switchsolutions.farmtohome.b2b.presentation.dashboard.viewmodel.DashboardViewModel
+import com.switchsolutions.farmtohome.b2b.roomdb.cart.CartEntityClass
 import kotlinx.coroutines.NonDisposableHandle.parent
 
-class ViewSingleOrderAdapter(private var viewModel: DashboardViewModel,
-                             private var listdata: ArrayList<OrderProductsData>,
-                             private  var onClickListener: View.OnClickListener
-) :
-    RecyclerView.Adapter<ViewSingleOrderAdapter.ViewHolder>() {
+class ViewCheckoutDetailsAdapter(private var product: ArrayList<CartEntityClass>,
+                                 private var productStoredData: ArrayList<CartEntityClass>,
+                                 private  var onClickListener: View.OnClickListener):
+    RecyclerView.Adapter<ViewCheckoutDetailsAdapter.ViewHolder>() {
     private lateinit var viewContext: Context
-    private var quantity = 0
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): ViewHolder {
+    ):  ViewHolder {
         viewContext = parent.context
         val layoutInflater = LayoutInflater.from(parent.context)
         val listItem: View = layoutInflater.inflate(R.layout.view_single_item_checkout, parent, false)
-        return ViewHolder(listItem, quantity, viewContext)
+        return ViewHolder(listItem, product,  viewContext)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(listdata[position], position)
+        holder.bind( product[position],productStoredData[position], position)
         //holder.textViewCustomerName.text = listdata[position].label
     }
+
     override fun getItemCount(): Int {
-        return listdata.size
+        return product.size
     }
+
     private fun openOrderDetail (){
+
     }
     private fun editOrder(){
+
     }
-    class ViewHolder(itemView: View, var quantity: Int, var viewContext: Context) : RecyclerView.ViewHolder(itemView) {
+
+    class ViewHolder(itemView: View, product: ArrayList<CartEntityClass>,
+                     var viewContext: Context) : RecyclerView.ViewHolder(itemView) {
 
         var textViewCustomerName: TextView = itemView.findViewById<View>(R.id.product_name_edit) as TextView
-        var textViewProductPrice: TextView = itemView.findViewById<View>(R.id.product_price_tv_cart2_checkout) as TextView
-        var textViewProductTotalPrice: TextView = itemView.findViewById<View>(R.id.product_item_list_price) as TextView
         var textViewProductUnit: TextView = itemView.findViewById<View>(R.id.product_unit_and_quantity_cart2) as TextView
         var Quantity: TextView = itemView.findViewById<View>(R.id.total_qty_cart_edit) as TextView
+        var price: TextView = itemView.findViewById<View>(R.id.product_item_list_price) as TextView
+        var perUnitPrice: TextView = itemView.findViewById<View>(R.id.product_price_tv_cart2_checkout) as TextView
         var iv: ImageView = itemView.findViewById<View>(R.id.iv_product_single_order) as ImageView
 
-        fun bind(item: OrderProductsData, position: Int){
+        fun bind( product: CartEntityClass, storedData: CartEntityClass,   position: Int){
             val requestOptions = RequestOptions().transforms(CenterCrop(), RoundedCorners(16))
-            textViewCustomerName.text = item.label
-            textViewProductPrice.text = item.selling_price_b2b
-            textViewProductTotalPrice.text = (((item.selling_price_b2b)!!.toInt()) * ((item.quantity)!!.toInt())).toString()
-            Quantity.text = item.quantity!!.toString()
-            textViewProductUnit.text = item.unit
+           textViewCustomerName.text = product.label
+            Quantity.text = product.quantity
+            perUnitPrice.text = storedData.price+ " / "+product.unit
+            textViewProductUnit.text = product.unit
+            price.text = product.price
             Glide.with(viewContext)
-                .load(item.imgUrl?: "")
+                .load(product.imgUrl?: "")
                 .apply(requestOptions)
                 .placeholder(R.drawable.logo_round)
                 .into(iv)
             //DashboardFragment.productQuantity.add(item.quantity!!)
         }
     }
+
     // RecyclerView recyclerView;
-    init {
-        this.listdata = listdata
-    }
 }

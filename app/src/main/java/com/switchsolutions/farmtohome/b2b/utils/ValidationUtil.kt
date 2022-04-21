@@ -17,6 +17,10 @@ class ValidationUtil {
             return password.length > 5
         }
 
+        fun isNotEmpty(input : String) : Boolean{
+            return input.isNotEmpty()
+        }
+
         fun isPhoneNumberValid(msisdn : String) : Boolean{
            // return msisdn.length in 10..12
             val pattern = Pattern.compile(NUMBER_PATTERN)

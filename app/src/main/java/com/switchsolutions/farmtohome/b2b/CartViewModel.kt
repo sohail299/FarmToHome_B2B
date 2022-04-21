@@ -14,14 +14,30 @@ class CartViewModel(private val repository: CartRepository) : ViewModel() {
     val inputQuantity = MutableLiveData<String>()
     var cartStatus: MutableLiveData<Boolean> = MutableLiveData()
 
+
+    var total = MutableLiveData<Int>()
+    val totalAmount : LiveData<Int>
+        get() = total
+
+
     private val statusMessage = MutableLiveData<Event<String>>()
     val message: LiveData<Event<String>>
         get() = statusMessage
+
 
     init {
         inputName.value = ""
         inputQuantity.value = ""
         cartStatus.value = false
+        total.value = 0
+    }
+
+    fun setTotal(input:Int){
+        total.value =(total.value)?.plus(input)
+    }
+
+    fun setTotalMinus(input:Int){
+        total.value =(total.value)?.minus(input)
     }
 
     fun initUpdateAndDelete(product: CartEntityClass) {

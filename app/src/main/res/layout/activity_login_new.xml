@@ -263,7 +263,7 @@
             android:fontFamily="@font/montserrat"
             android:hint="Phone Number (03xx xxxxxxx)"
             android:textColorHint="@color/light_grey"
-            android:inputType="number"
+            android:inputType="phone"
             android:maxLength="11"
             android:paddingStart="16dp"
             android:paddingLeft="16dp"

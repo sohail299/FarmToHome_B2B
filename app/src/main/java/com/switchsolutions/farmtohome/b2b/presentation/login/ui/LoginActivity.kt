@@ -36,9 +36,10 @@ import com.switchsolutions.farmtohome.b2b.presentation.login.data.request.OTPVer
 import com.switchsolutions.farmtohome.b2b.presentation.login.data.request.PasswordResetRequestModel
 import com.switchsolutions.farmtohome.b2b.presentation.login.data.response.LoginResponse
 import com.switchsolutions.farmtohome.b2b.presentation.login.viewmodel.LogInViewModel
+import com.switchsolutions.farmtohome.b2b.utils.NotificationUtil
 import com.switchsolutions.farmtohome.b2b.utils.Utilities
+import com.switchsolutions.farmtohome.b2b.utils.enums.Type
 import java.util.concurrent.TimeUnit
-
 
 class LoginActivity : AppCompatActivity(),
     View.OnClickListener/*, ICallBackListener<LoginResponseModel>*/ {
@@ -50,7 +51,6 @@ class LoginActivity : AppCompatActivity(),
     private lateinit var phone: String
     private val countryCode = "+92"
     private var mResendToken: ForceResendingToken? = null
-
 
     companion object {
         const val SIGNIN_FRAGMENT_TAG: String = "signInFrag"
@@ -80,6 +80,7 @@ class LoginActivity : AppCompatActivity(),
         binding.resetPasswordShowHideIcon.setOnClickListener(this)
         binding.resetPasswordConfirmShowHideIcon.setOnClickListener(this)
         binding.imageViewOtpBack.setOnClickListener(this)
+        binding.loginPhoneNumberEt.requestFocus()
     }
 
 
@@ -95,7 +96,7 @@ class LoginActivity : AppCompatActivity(),
     override fun onClick(v: View?) {
         when (v?.id!!) {
             binding.loginLoginBtn.id -> viewModel.signInClicked()
-            binding.loginForgotPasswordTv.id -> switchScreen(binding.layoutLogin, binding.layoutForgotPassword,"")
+            binding.loginForgotPasswordTv.id -> switchScreen(binding.layoutLogin, binding.layoutForgotPassword,"ForgotPassword")
             binding.backButtonForgotPassword.id -> switchScreen(binding.layoutForgotPassword, binding.layoutLogin,"")
             binding.otpVerificationButton.id -> viewModel.startOtpVerification()
             binding.resetPasswordChangePasswordBtn.id -> callChangePasswordApi()
@@ -131,11 +132,12 @@ class LoginActivity : AppCompatActivity(),
             } else if (resetPasswordChangePasswordEt.text.toString() != resetPasswordConfirmChangePasswordEt.text
                     .toString()
             ) {
+                resetPasswordChangePasswordErrorEt.visibility = View.GONE
                 resetPasswordConfirmChangePasswordErrorEt.text = "Password doesn't match the above entered password"
                 resetPasswordConfirmChangePasswordErrorEt.visibility = View.VISIBLE
             } else {
                 resetPasswordChangePasswordErrorEt.visibility = View.GONE
-                resetPasswordChangePasswordEt.visibility = View.GONE
+                resetPasswordConfirmChangePasswordErrorEt.visibility = View.GONE
                 val changePasswordObject = JsonObject()
                 changePasswordObject.addProperty("password", resetPasswordChangePasswordEt.text.toString())
                 changePasswordObject.addProperty("msisdn", phone)
@@ -159,21 +161,23 @@ class LoginActivity : AppCompatActivity(),
                // callSignInApi.value = false
                 //saving user details
                 //Event(t!!)
+               // NotificationUtil.showShortToast(this, "Error Occurred", Type.DANGER)
+                NotificationUtil.showLongToast(this@LoginActivity, "Password Updated", Type.SUCCESS)
                 switchScreen(binding.layoutPasswordReset, binding.layoutLogin,"")
             }
 
             override fun onFailure(t: ErrorDto) {
-                binding.loginLoginBtn.revertAnimation()
-                binding.loginLoginBtn.setBackgroundResource(R.drawable.rounded_edittext_bg)
+                binding.resetPasswordConfirmChangePasswordErrorEt.text = t.message
+                binding.resetPasswordConfirmChangePasswordErrorEt.visibility = View.VISIBLE
+                binding.resetPasswordChangePasswordBtn.revertAnimation()
+                binding.resetPasswordChangePasswordBtn.setBackgroundResource(R.drawable.rounded_edittext_bg)
                 //Event(t)
             }
-
             override fun tokenRefreshed() {
                 //nothing required in this case
             }
         }
     }
-
 
     override fun onBackPressed() {
         super.onBackPressed()
@@ -208,9 +212,10 @@ class LoginActivity : AppCompatActivity(),
             binding.otp1.requestFocus()
             binding.forgotPasswordPhoneNumberEt.setText("")
         }
+        if (screen == "ForgotPassword"){
+            binding.forgotPasswordPhoneNumberEt.requestFocus()
+        }
     }
-
-
 
     private fun startObservers() {
         viewModel.getLoginRequestModel().observe(this, Observer {
@@ -226,11 +231,40 @@ class LoginActivity : AppCompatActivity(),
         viewModel.signInEmailErrorStatus.observe(this, Observer {
             if (it!!) setEmailError()
         })
+
+        viewModel.signInPhoneErrorStatus.observe(this, Observer {
+            if (it!!){
+                binding.errorMessageTextview.visibility = View.VISIBLE
+                binding.errorMessageTextview.text = "Enter Phone Number"
+                binding.loginPhoneNumberEt.requestFocus()
+            }
+        })
+
+        viewModel.signInPassErrorStatus.observe(this, Observer {
+            if (it!!) {
+                binding.errorMessageTextview.visibility = View.VISIBLE
+                binding.errorMessageTextview.text = "Enter Password"
+                binding.loginPasswordEt.requestFocus()
+            }
+        })
+        viewModel.otpPhoneErrorStatus.observe(this, Observer {
+            if (it!!){
+                binding.errorMessageTextviewOtp.visibility = View.VISIBLE
+                binding.errorMessageTextviewOtp.text = "Enter Phone Number"
+            }
+        })
         viewModel.signInPasswordErrorStatus.observe(this, Observer {
             if (it!!) setPasswordError()
         })
         viewModel.clearAllInputErrors.observe(this, Observer {
             if (it!!) clearAllErrors()
+        })
+
+        viewModel.resetPhoneErrorStatus.observe(this, Observer {
+            if (it!!) {
+                binding.errorMessageTextviewOtp.visibility = View.VISIBLE
+                binding.errorMessageTextviewOtp.text = "Invalid Phone Number"
+            }
         })
         viewModel.callSignInApi.observe(this, Observer {
             if (it!!) {
@@ -288,7 +322,6 @@ class LoginActivity : AppCompatActivity(),
             it.getContentIfNotHandled()?.let {
                 if (it)
                     Toast.makeText(this, "Enter Valid OTP", Toast.LENGTH_SHORT).show()
-
             }
         }
 

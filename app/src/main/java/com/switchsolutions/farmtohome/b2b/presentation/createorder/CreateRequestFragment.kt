@@ -13,6 +13,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.switchsolutions.farmtohome.b2b.*
+import com.switchsolutions.farmtohome.b2b.MainActivity.Companion.USER_STORED_CITY_ID
+import com.switchsolutions.farmtohome.b2b.MainActivity.Companion.customerId
 import com.switchsolutions.farmtohome.b2b.data.viewmodel.ProductsApiViewModel
 import com.switchsolutions.farmtohome.b2b.databinding.CreateRequestFragmentBinding
 import com.switchsolutions.farmtohome.b2b.interfaces.CartBadge
@@ -79,6 +81,7 @@ class CreateRequestFragment : Fragment() {
         productApiViewModel = ViewModelProvider(this)[ProductsApiViewModel::class.java]
 
         binding.layoutRefreshProducts.setOnRefreshListener {
+            productApiViewModel.startObserver(USER_STORED_CITY_ID, customerId)
 
         }
 
@@ -95,12 +98,12 @@ class CreateRequestFragment : Fragment() {
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
             android.widget.SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String): Boolean {
-                adapter.filter(query);
+                adapter.filter(query)
                 return true
             }
 
             override fun onQueryTextChange(newText: String): Boolean {
-                adapter.filter(newText);
+                adapter.filter(newText)
                 return true
             }
         })

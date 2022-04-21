@@ -53,7 +53,7 @@ class ProfileFragment : Fragment() {
         val dao = CartDatabase.getInstance(requireContext()).cartDAO
         val repository = CartRepository(dao)
         val factory = CartViewModelFactory(repository)
-        cartViewModel = ViewModelProvider(this, factory).get(CartViewModel::class.java)
+        cartViewModel = ViewModelProvider(this, factory)[CartViewModel::class.java]
         binding.apply {
     btnLogout.setOnClickListener {
         logout()
@@ -84,9 +84,16 @@ class ProfileFragment : Fragment() {
                 openProfileScreen()
             }
         }
+        viewModel.statusUpdatePasswordFailure.observe(viewLifecycleOwner) { it ->
+            it.getContentIfNotHandled()?.let {
+                Toast.makeText(requireContext(), "Old Password is Invalid", Toast.LENGTH_LONG).show()
+                binding.changePasswordButton.revertAnimation()
+                binding.changePasswordButton.setBackgroundResource(R.drawable.rounded_edittext_bg)
 
+                //openProfileScreen()
+            }
+        }
     }
-
     private fun openProfileScreen() {
         binding.apply {
             layoutPasswordResetProfile.animate()
@@ -103,7 +110,6 @@ class ProfileFragment : Fragment() {
             confirmChangePasswordNewPasswordEt.setText("")
             changePasswordButton.revertAnimation()
             changePasswordButton.setBackgroundResource(R.drawable.rounded_edittext_bg)
-
             layoutPasswordResetProfile.visibility = View.GONE
             layoutProfile.visibility = View.VISIBLE
             layoutProfile.alpha = 0.0f
@@ -119,7 +125,6 @@ class ProfileFragment : Fragment() {
                 })
         }
     }
-
     private fun openResetPasswordScreen() {
             binding.layoutProfile.animate()
                 .translationY(0F)
@@ -145,7 +150,6 @@ class ProfileFragment : Fragment() {
                 })
             // binding.layoutLogin.visibility = View.GONE
             //binding.layoutForgotPassword.visibility = View.VISIBLE
-
     }
     fun changeOldPassword() {
         binding.apply {
@@ -161,12 +165,10 @@ class ProfileFragment : Fragment() {
                 changePasswordObject.addProperty("newPassword", confirmChangePasswordNewPasswordEt.text.toString())
                 changePasswordButton.startAnimation()
                viewModel.startObserver(changePasswordObject)
-
         }
     }
     }
-    fun logout() {
-
+    private fun logout() {
         val builder = AlertDialog.Builder(requireContext())
         builder.setMessage(getString(R.string.signing_out_warning))
             .setPositiveButton(getString(R.string.sign_out)) { dialog, _ ->
@@ -187,7 +189,4 @@ class ProfileFragment : Fragment() {
             }
         builder.show()
     }
-
-
-
 }

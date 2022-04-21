@@ -29,6 +29,17 @@
             android:queryHint="Search Product"
             app:iconifiedByDefault="false"
             android:theme="@style/ThemeOverlay.SearchView"/>
+        <TextView
+            android:id="@+id/serchview_text_no_products"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="18sp"
+            android:text="No Products Found"
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:fontFamily="@font/montserrat"
+            android:visibility="gone"/>
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/layout_refresh_products"
             android:layout_width="match_parent"

@@ -36,19 +36,19 @@ class OrderHistoryItemAdapter(private var viewModel: OrderHistoryViewModel,
         holder.tvDeliveryDate.text = listdata[position].delivery_date
         holder.tvRequestId.text = listdata[position].id.toString()
         if (listdata[position].status == 1) {
-            holder.orderStatusTv.text = "Ready"
+            holder.orderStatusTv.text = "Ready "
             holder.orderStatusTv.setTextColor(ContextCompat.getColor(viewContext, R.color.ready_to_dispatch))
         }
         else if (listdata[position].status == 2) {
-            holder.orderStatusTv.text = "Rejected"
+            holder.orderStatusTv.text = "Rejected "
             holder.orderStatusTv.setTextColor(ContextCompat.getColor(viewContext, R.color.rejected))
         }
-        else if (listdata[position].status == 3) {
-            holder.orderStatusTv.text = "Dispatched"
+        else if (listdata[position].status == 3 || listdata[position].status == 5) {
+            holder.orderStatusTv.text = "Dispatched "
             holder.orderStatusTv.setTextColor(ContextCompat.getColor(viewContext, R.color.dispatched))
         }
-        else if (listdata[position].status == 4) {
-            holder.orderStatusTv.text = "Delivered"
+        else if (listdata[position].status == 4 ) {
+            holder.orderStatusTv.text = "Delivered "
             holder.orderStatusTv.setTextColor(ContextCompat.getColor(viewContext, R.color.delivered))
         }
         holder.relativeLayout.setOnClickListener {

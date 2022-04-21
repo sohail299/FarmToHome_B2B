@@ -36,6 +36,7 @@ class ProductListAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         if (listdata.isNotEmpty()){
+            CreateRequestFragment.binding.serchviewTextNoProducts.visibility = View.GONE
         holder.tvProductName.text = listdata[position].label
             holder.tvProductPrice.text = "${listdata[position].price} Rs"
             holder.tvProductUnit.text = "/${listdata[position].unit}"
@@ -72,16 +73,23 @@ class ProductListAdapter(
     }
     @SuppressLint("NotifyDataSetChanged")
     fun filter(textString: String) {
+        var flag  = false
         var text = textString
         listdata.clear()
         if (text.isEmpty()) {
+            CreateRequestFragment.binding.serchviewTextNoProducts.visibility = View.GONE
             listdata.addAll(listdataCopy)
         } else {
             text = text.lowercase(Locale.getDefault())
             for (item in listdataCopy) {
                 if (item.label.lowercase(Locale.getDefault()).contains(text)) {
+                    CreateRequestFragment.binding.serchviewTextNoProducts.visibility = View.GONE
                     listdata.add(item)
+                    flag = true
                 }
+            }
+            if (listdata.isEmpty()){
+                CreateRequestFragment.binding.serchviewTextNoProducts.visibility = View.VISIBLE
             }
         }
         notifyDataSetChanged()

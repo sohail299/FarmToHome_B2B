@@ -40,6 +40,9 @@ class LogInViewModel : ViewModel() {
 
 
     var signInEmailErrorStatus: MutableLiveData<Boolean> = MutableLiveData()
+    var otpPhoneErrorStatus: MutableLiveData<Boolean> = MutableLiveData()
+    var signInPhoneErrorStatus: MutableLiveData<Boolean> = MutableLiveData()
+    var signInPassErrorStatus: MutableLiveData<Boolean> = MutableLiveData()
     var resetPhoneErrorStatus: MutableLiveData<Boolean> = MutableLiveData()
     var signInPasswordErrorStatus: MutableLiveData<Boolean> = MutableLiveData()
     var clearAllInputErrors: MutableLiveData<Boolean> = MutableLiveData()
@@ -86,6 +89,9 @@ class LogInViewModel : ViewModel() {
         otpRequestModel.value = if (BuildConfig.DEBUG) OTPVerificationRequestModel("", "","","","","")
         else OTPVerificationRequestModel("", "","","","","")
         signInEmailErrorStatus.value = false
+        otpPhoneErrorStatus.value = false
+        signInPhoneErrorStatus.value = false
+        signInPassErrorStatus.value = false
         resetPhoneErrorStatus.value = false
         signInPasswordErrorStatus.value = false
         clearAllInputErrors.value = true
@@ -109,6 +115,16 @@ class LogInViewModel : ViewModel() {
         clearAllInputErrors.value = false
         //Validating data
         loginRequestModel.value?.msisdn = loginRequestModel.value?.msisdn?.trim() ?: ""
+        if (!ValidationUtil.isNotEmpty(loginRequestModel.value?.msisdn?.trim() ?: ""))
+        {
+            signInPhoneErrorStatus.value = true
+            return
+        }
+        if (!ValidationUtil.isNotEmpty(loginRequestModel.value?.password?.trim() ?: ""))
+        {
+            signInPassErrorStatus.value = true
+            return
+        }
         if (!ValidationUtil.isPhoneNumberValid(loginRequestModel.value?.msisdn!!) && !ValidationUtil.isANumber(
                 loginRequestModel.value?.msisdn!!
             )
@@ -238,6 +254,11 @@ class LogInViewModel : ViewModel() {
         clearAllInputErrors.value = false
         //Validating data
         resetPasswordRequestModel.value?.msisdn = resetPasswordRequestModel.value?.msisdn?.trim() ?: ""
+        if (!ValidationUtil.isNotEmpty(resetPasswordRequestModel.value?.msisdn?.trim() ?: ""))
+        {
+            otpPhoneErrorStatus.value = true
+            return
+        }
         if (!ValidationUtil.isPhoneNumberValid(resetPasswordRequestModel.value?.msisdn!!) && !ValidationUtil.isANumber(
                 resetPasswordRequestModel.value?.msisdn!!)) {
 

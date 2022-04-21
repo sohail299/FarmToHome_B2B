@@ -67,13 +67,15 @@ class OrderHistoryFragment : Fragment() {
         // TODO: Use the ViewModel
 
         binding.rlDashboardRefreshHistory.setOnRefreshListener {
-            binding.rlDashboardRefreshHistory.isRefreshing = false
+            viewModel.startObserver(USER_STORED_CITY_ID, USER_ID)
+
         }
     }
 
     fun startObservers() {
         viewModel.callSignInApi.observe(viewLifecycleOwner, Observer {
             if (it!!) {
+                if (!binding.rlDashboardRefreshHistory.isRefreshing)
                 progressBar.visibility = View.VISIBLE
             }
         })
@@ -81,6 +83,7 @@ class OrderHistoryFragment : Fragment() {
             if (progressBar.isVisible) progressBar.visibility = View.GONE
             ordersResponseModel = it
             listData = ordersResponseModel.data
+            binding.rlDashboardRefreshHistory.isRefreshing = false
 //            val adapter = DashboardAdapter(orders, View.OnClickListener(){
 //            })
             val adapter = OrderHistoryItemAdapter(viewModel, listData, View.OnClickListener {
@@ -93,6 +96,7 @@ class OrderHistoryFragment : Fragment() {
         })
         viewModel.apiResponseFailure.observe(viewLifecycleOwner, Observer {
             if (progressBar.isVisible) progressBar.visibility = View.GONE
+            binding.rlDashboardRefreshHistory.isRefreshing = false
             if ((it?.statusCode == HttpStatusCodes.SC_UNAUTHORIZED) || (it?.statusCode == HttpStatusCodes.SC_NO_CONTENT)) {
                 Toast.makeText(
                     requireContext(), "Unauthorized",
